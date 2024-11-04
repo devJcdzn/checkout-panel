@@ -119,7 +119,10 @@ export function EditCheckoutSheet() {
           ) : (
             <CheckoutForm
               id={hash}
-              defaultValues={defaultValues}
+              defaultValues={{
+                ...defaultValues,
+                productId: Number(defaultValues.productId), //To fix Later
+              }}
               onSubmit={onSubmit}
               onDelete={onDelete}
               disabled={isLoading || isPending}
