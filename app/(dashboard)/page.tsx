@@ -55,12 +55,12 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {isLoading ? (
+                {isLoading || !data ? (
                   <span className="text-xs text-muted-foreground">
                     Carregando...
                   </span>
                 ) : (
-                  data.totalProducts
+                  data?.totalProducts
                 )}
               </div>
             </CardContent>
