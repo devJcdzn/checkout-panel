@@ -43,6 +43,8 @@ export async function POST(request: Request) {
     },
   });
 
+  prisma.$disconnect();
+
   return new NextResponse(
     JSON.stringify({
       message: "Product created successfully",

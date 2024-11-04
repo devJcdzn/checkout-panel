@@ -39,6 +39,8 @@ export async function GET() {
 
   const recentMetricsOfWeek = await getMetricsByDayOfWeek();
 
+  prisma.$disconnect();
+
   return NextResponse.json({
     totalImpressions: aggregateMetrics._sum.impressions || 0,
     totalConversions: aggregateMetrics._sum.conversions || 0,

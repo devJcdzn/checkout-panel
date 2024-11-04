@@ -37,6 +37,8 @@ export async function GET(
     },
   });
 
+  prisma.$disconnect();
+
   return new NextResponse(
     JSON.stringify({
       checkout,

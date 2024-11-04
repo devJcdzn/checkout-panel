@@ -25,6 +25,8 @@ export async function GET(
     return new NextResponse("Checkout not found", { status: 404 });
   }
 
+  prisma.$disconnect();
+
   return new NextResponse(
     JSON.stringify({
       payment,
