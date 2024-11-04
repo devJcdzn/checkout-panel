@@ -33,6 +33,7 @@ export async function POST(request: Request) {
         Key: fileName,
         Body: buffer,
         ContentType: image.type,
+        ACL: "public-read",
       })
       .promise();
   }
