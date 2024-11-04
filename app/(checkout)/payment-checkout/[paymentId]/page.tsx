@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import Countdown from "./_components/countdown";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 // import { useCreatePayment } from "@/features/payment/api/use-create-payment";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
