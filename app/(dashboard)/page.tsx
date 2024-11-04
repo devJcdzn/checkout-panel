@@ -76,7 +76,7 @@ export default function Home() {
                     Carregando...
                   </span>
                 ) : (
-                  data.totalImpressions
+                  data?.totalImpressions
                 )}
               </div>
             </CardContent>
