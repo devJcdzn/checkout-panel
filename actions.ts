@@ -138,3 +138,17 @@ export async function getMetricsByDayOfWeek(): Promise<
 
   return last7Days;
 }
+
+export async function checkPaymentStatus(paymentId: string) {
+  const payment = await prisma.payment.findUnique({
+    where: {
+      id: paymentId,
+    },
+  });
+
+  if (!payment) throw new Error("Pagamento não encontrado");
+
+  if (payment.status === "credited") return true;
+
+  return false;
+}

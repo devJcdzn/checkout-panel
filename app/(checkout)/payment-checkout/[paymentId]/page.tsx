@@ -9,6 +9,7 @@ import Countdown from "./_components/countdown";
 import { useEffect } from "react";
 // import { useCreatePayment } from "@/features/payment/api/use-create-payment";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { checkPaymentStatus } from "@/actions";
 
 export default function CheckoutPage() {
   const { toast } = useToast();
@@ -67,6 +68,28 @@ export default function CheckoutPage() {
       }
     }
   }, [data, isLoading, router, toast]);
+
+  const getPaymentStatus = async () => {
+    const isPayed = await checkPaymentStatus(paymentId);
+
+    if (isPayed) {
+      toast({
+        title: "Pagamento realizado com sucesso!",
+      });
+      router.push(
+        data.checkout.redirectLink || `/checkout/${data.checkout.hash}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getPaymentStatus();
+    }, 5000); // verifica a cada 5 segundos
+
+    // Limpa o intervalo ao desmontar o componente
+    return () => clearInterval(interval);
+  }, []);
 
   if (!data || isLoading) {
     return (

@@ -50,10 +50,5 @@ export async function POST(request: Request) {
     },
   });
 
-  await prisma.$disconnect();
-
-  return NextResponse.redirect(
-    paymentUpdated.checkout.redirectLink ??
-      `checkout/${paymentUpdated.checkoutId}`
-  );
+  return NextResponse.json({ success: true }, { status: 200 });
 }
