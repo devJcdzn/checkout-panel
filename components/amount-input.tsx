@@ -1,21 +1,13 @@
 import CurrencyInput from "react-currency-input-field";
-import { cn } from "@/lib/utils";
 
 interface Props {
   value?: string;
   onChange: (value: string | undefined) => void;
   placeholder?: string;
   disabled?: boolean;
-  isExpense?: boolean;
 }
 
-export function AmountInput({
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  isExpense,
-}: Props) {
+export function AmountInput({ value, onChange, placeholder, disabled }: Props) {
   return (
     <>
       <CurrencyInput

@@ -2,7 +2,7 @@ import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 import { getMetricsByDayOfWeek } from "../../../actions";
 
-export async function GET(_request: Request) {
+export async function GET() {
   const aggregateMetrics = await prisma.checkout.aggregate({
     _sum: {
       impressions: true,

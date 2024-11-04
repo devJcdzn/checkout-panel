@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { Coins, Link, MoreHorizontal, PencilRuler, Trash } from "lucide-react";
+import { Link, MoreHorizontal, PencilRuler, Trash } from "lucide-react";
 
 import { useOpenCheckout } from "@/features/checkouts/hooks/use-open-checkout";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -19,7 +19,7 @@ interface Props {
   hash: string;
 }
 
-export function ActionsMenu({ id, hash }: Props) {
+export function ActionsMenu({ hash }: Props) {
   const { toast } = useToast();
   const [ConfirmDialog, confirm] = useConfirm(
     "Tem certeza que deseja deletar?",

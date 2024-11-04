@@ -7,7 +7,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import Countdown from "./_components/countdown";
 import { useEffect, useState } from "react";
-import { useCreatePayment } from "@/features/payment/api/use-create-payment";
+// import { useCreatePayment } from "@/features/payment/api/use-create-payment";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function CheckoutPage() {
@@ -15,10 +15,10 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { paymentId } = useParams<{ paymentId: string }>();
 
-  const { data, isLoading, refetch } = useGetPayment(paymentId);
-  const paymentMutation = useCreatePayment();
+  const { data, isLoading } = useGetPayment(paymentId);
+  // const paymentMutation = useCreatePayment();
 
-  const [isExpired, setIsExpired] = useState<boolean>(false);
+  // const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const copyPaymentCodeToClipboard = () => {
     navigator.clipboard
@@ -38,18 +38,19 @@ export default function CheckoutPage() {
   };
 
   const handleExpire = (expired: boolean) => {
-    setIsExpired(expired);
+    // setIsExpired(expired);
+    console.log(expired);
   };
 
-  const handleRestartInterval = async () => {
-    try {
-    } catch (error) {
-      toast({
-        title: "Erro ao gerar novo código",
-        variant: "destructive",
-      });
-    }
-  };
+  // const handleRestartInterval = async () => {
+  //   try {
+  //   } catch (error) {
+  //     toast({
+  //       title: "Erro ao gerar novo código",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     if (!isLoading && data) {

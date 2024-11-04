@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -26,8 +25,7 @@ const chartConfig = {
     color: "#125326",
   },
 } satisfies ChartConfig;
-export function BarMultiple({ data, labels }: Props) {
-
+export function BarMultiple({ data }: Props) {
   return (
     <ChartContainer config={chartConfig}>
       <BarChart accessibilityLayer data={data}>
