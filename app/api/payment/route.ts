@@ -87,7 +87,5 @@ export async function POST(request: Request) {
     );
   } catch (err) {
     return new NextResponse("Server Error", { status: 500 });
-  } finally {
-    await prisma?.$disconnect();
   }
 }

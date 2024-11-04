@@ -1,6 +1,5 @@
 import { prisma } from "@/utils/db";
-import { promises as fs } from "fs";
-import path from "path";
+import s3 from "@/utils/cloudflare-config";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -21,17 +20,21 @@ export async function POST(request: Request) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
   }
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-
-  await fs.mkdir(uploadDir, { recursive: true });
-
-  let fileName;
+  let uploadResult;
 
   if (image) {
-    fileName = `${Date.now()}-${image.name}`;
-    const filePath = path.join(uploadDir, fileName);
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const fileName = `${Date.now()}-${image.name}`;
 
-    await fs.writeFile(filePath, Buffer.from(await image.arrayBuffer()));
+    uploadResult = await s3
+      .upload({
+        Bucket: process.env.R2_BUCKET_NAME!, // Defina o nome do bucket no .env
+        Key: fileName,
+        Body: buffer,
+        ContentType: image.type,
+      })
+      .promise();
   }
 
   const newProduct = await prisma.product.create({
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
       name,
       description,
       price: Number(price),
-      image: `/uploads/${fileName}`,
+      image: uploadResult?.Location,
     },
   });
 
