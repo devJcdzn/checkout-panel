@@ -110,7 +110,7 @@ export default function Home() {
                     Carregando...
                   </span>
                 ) : (
-                  data.topCheckout.model
+                  data.topCheckout?.model
                 )}
               </div>
             </CardContent>
@@ -163,7 +163,7 @@ export default function Home() {
                       </div>
                       <div className="ml-auto font-medium capitalize">
                         <p className="text-sm font-medium leading-none">
-                          {checkout.model}
+                          {checkout?.model}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           Último Acesso:{" "}
