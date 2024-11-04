@@ -1,6 +1,12 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Badge } from "@/components/ui/badge";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Painel | Sunize-Checkout",
+  description: "Painel de geração de checkouts.",
+};
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
