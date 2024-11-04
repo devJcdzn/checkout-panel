@@ -20,14 +20,14 @@ export async function POST(request: Request) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
   }
 
-  let uploadResult;
+  let fileName;
 
   if (image) {
     const arrayBuffer = await image.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const fileName = `${Date.now()}-${image.name}`;
+    fileName = `${Date.now()}-${image.name}`;
 
-    uploadResult = await s3
+    await s3
       .upload({
         Bucket: process.env.R2_BUCKET_NAME!, // Defina o nome do bucket no .env
         Key: fileName,
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       name,
       description,
       price: Number(price),
-      image: uploadResult?.Location,
+      image: `${process.env.PUBLIC_ACCESS_R2_URL}/${fileName}`,
     },
   });
 
