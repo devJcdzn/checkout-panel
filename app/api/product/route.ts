@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       name,
       description,
       price: Number(price),
-      image: `${process.env.PUBLIC_ACCESS_R2_URL}/${fileName}`,
+      image: `${process.env.ACCESS_R2_URL}/${fileName}`,
     },
   });
 

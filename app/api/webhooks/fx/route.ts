@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return new NextResponse("Payment not found", { status: 404 });
   }
 
-  if (statusTransaction !== "success") {
+  if (statusTransaction !== "credited") {
     return new NextResponse("Payment failed", { status: 400 });
   }
 
