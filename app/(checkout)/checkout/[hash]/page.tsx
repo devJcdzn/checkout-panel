@@ -8,9 +8,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetCheckout } from "@/features/checkouts/api/use-get-checkout";
 import { useCreatePayment } from "@/features/payment/api/use-create-payment";
+import { cn, formatCustomerTax } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,8 +23,9 @@ const formSchema = z.object({
   email: z.string().email("E-mail inválido"),
   tax: z.string().refine(
     (data) => {
-      const cpfRegex = /^\d{11}$/;
-      const cnpjRegex = /^\d{14}$/;
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+      const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+
       return cpfRegex.test(data) || cnpjRegex.test(data);
     },
     { message: "CPF ou CNPJ inválido" }
@@ -57,7 +61,111 @@ export default function CheckoutPage() {
   if (!data || isLoading) {
     return (
       <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
-        Carregando...
+        <div className="mb-4"></div>
+        <div className="w-full flex-col lg:w-[60rem]"></div>
+        <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
+          <div className="w-full rounded-2xl border border-[#474747] bg-[#272727] p-4">
+            <section className="flex items-start gap-4">
+              <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-[#b4b4b4]">
+                <Skeleton className="h-full w-full rounded-lg" />
+              </div>
+              <section>
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-6 w-[150px]" />
+                <Skeleton className="h-4 w-[80px]" />
+              </section>
+            </section>
+          </div>
+
+          <div className="mt-4 w-full rounded-xl border border-[#474747] bg-[#272727] p-4">
+            <section className="flex items-center gap-2">
+              <div
+                className="flex h-6 w-6 items-center justify-center rounded-md"
+                style={{ backgroundColor: "rgb(76, 175, 80)" }}
+              >
+                <Loader2 className="h-6 w-6 animate-spin text-[#272727]" />
+              </div>
+              <Skeleton className="h-6 w-[250px]" />
+            </section>
+
+            {Array(3).map((index) => (
+              <div key={index} className="mt-6 flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="mt-4 w-full rounded-xl border border-[#474747] 
+            bg-[#272727] p-4"
+          >
+            <section className="flex items-center gap-2">
+              <div
+                className="flex h-6 w-6 items-center justify-center rounded-md"
+                style={{
+                  backgroundColor: "rgb(76,175,80)",
+                }}
+              >
+                <Loader2 className="h-6 w-6 animate-spin text-[#272727]" />
+              </div>
+              <Skeleton className="h-6 w-[250px]" />
+            </section>
+
+            <div className="mt-6 flex flex-col gap-4">
+              <section className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  disabled
+                  className="border-green-500 text-green-500 relative  flex 
+                    w-full max-w-[17rem] flex-col items-start justify-start 
+                    rounded-lg border-2  p-4  duration-300 lg:hover:-translate-y-2"
+                >
+                  Carregando
+                </button>
+              </section>
+
+              <section
+                className="mt-4 flex flex-col gap-8 rounded-md 
+                bg-[#171717] px-6 py-4"
+              >
+                {Array(3).map((index) => (
+                  <div className="flex items-start gap-4" key={index}>
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <section>
+                      <Skeleton className="h-4 w-[250px]" />
+                      <Skeleton className="h-4 w-[200px]" />
+                      <Skeleton className="h-4 w-[150px]" />
+                      <Skeleton className="h-4 w-[100px]" />
+                    </section>
+                  </div>
+                ))}
+
+                <section className="flex flex-col">
+                  <button
+                    type="submit"
+                    disabled={paymentMutation.isPending}
+                    className={cn(
+                      "mt-4 flex w-full cursor-pointer animate-pulse items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold text-white hover:brightness-95"
+                    )}
+                  >
+                    Carregando
+                  </button>
+                  <div className="mt-4 flex items-center justify-center gap-8">
+                    <section className="flex gap-2 items-center">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <section className="flex flex-col gap-1">
+                        <Skeleton className="h-3 w-[100px]" />
+                        <Skeleton className="h-3 w-[80px]" />
+                      </section>
+                    </section>
+                  </div>
+                </section>
+              </section>
+            </div>
+          </div>
+        </div>
       </main>
     );
   }
@@ -199,7 +307,7 @@ export default function CheckoutPage() {
                             focus:ring-0 sm:text-sm sm:leading-6 
                             pl-9 focus:border-white border border-[#474747] 
                             focus:border-[1px]"
-                            placeholder="Digite seu nome completo"
+                            placeholder="Digite seu nome e-mail"
                             {...field}
                           />
                         </div>
@@ -245,8 +353,14 @@ export default function CheckoutPage() {
                             focus:ring-0 sm:text-sm sm:leading-6 
                             pl-9 focus:border-white border border-[#474747] 
                             focus:border-[1px]"
-                            placeholder="Digite seu nome completo"
+                            placeholder="Digite seu CPF/CNPJ"
                             {...field}
+                            onChange={(e) => {
+                              const formattedValue = formatCustomerTax(
+                                e.target.value
+                              );
+                              field.onChange(formattedValue);
+                            }}
                           />
                         </div>
                         <FormMessage>
@@ -284,6 +398,7 @@ export default function CheckoutPage() {
                 </div>
                 <h2 className="text-lg font-semibold text-white">Pagamento</h2>
               </section>
+
               <div className="mt-6 flex flex-col gap-4">
                 <section className="flex flex-col gap-2">
                   <button
@@ -326,6 +441,7 @@ export default function CheckoutPage() {
                     </div>
                   </button>
                 </section>
+
                 <section
                   className="mt-4 flex flex-col gap-8 rounded-md 
                 bg-[#171717] px-6 py-4"
@@ -431,11 +547,14 @@ export default function CheckoutPage() {
                   <section className="flex flex-col">
                     <button
                       type="submit"
-                      className="mt-4 flex w-full cursor-pointer items-center 
-                      justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 
-                      text-lg font-bold text-white hover:brightness-95"
+                      disabled={paymentMutation.isPending}
+                      className={cn(
+                        "mt-4 flex w-full cursor-pointer items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold text-white hover:brightness-95"
+                      )}
                     >
-                      FINALIZAR PAGAMENTO
+                      {paymentMutation.isPending
+                        ? "Carregando..."
+                        : "FINALIZAR PAGAMENTO"}
                     </button>
                     <div className="mt-4 flex items-center justify-center gap-8">
                       <section className="flex gap-1">

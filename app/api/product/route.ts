@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     await s3
       .upload({
-        Bucket: process.env.R2_BUCKET_NAME!, // Defina o nome do bucket no .env
+        Bucket: process.env.R2_BUCKET_NAME!,
         Key: fileName,
         Body: buffer,
         ContentType: image.type,

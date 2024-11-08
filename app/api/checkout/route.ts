@@ -2,6 +2,8 @@ import { prisma } from "@/utils/db";
 import { promises as fs } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import { generateCheckoutHash } from "@/lib/utils";
+import s3 from "@/utils/cloudflare-config";
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
@@ -32,23 +34,35 @@ export async function POST(request: Request) {
     model
   );
 
-  await fs.mkdir(uploadDir, { recursive: true });
-  const fileName = `${Date.now()}-${banner?.name}-${model}`;
+  const hash = generateCheckoutHash();
+
+  let fileName;
 
   if (banner) {
-    const filePath = path.join(uploadDir, fileName);
+    const arrayBuffer = await banner.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    fileName = `${Date.now()}-${banner.name}`;
 
-    await fs.writeFile(filePath, Buffer.from(await banner.arrayBuffer()));
+    await s3
+      .upload({
+        Bucket: process.env.R2_BUCKET_NAME!,
+        Key: fileName,
+        Body: buffer,
+        ContentType: banner.type,
+        ACL: "public-read",
+      })
+      .promise();
   }
 
   const newCheckout = await prisma.checkout.create({
     data: {
       slug,
+      hash,
       productId: Number(productId),
       color,
       redirectLink,
       model,
-      banner: banner ? `/uploads/checkouts/${model}/${fileName}` : null,
+      banner: banner ? `${process.env.ACCESS_R2_URL}/${fileName}` : null,
     },
     select: {
       hash: true,
