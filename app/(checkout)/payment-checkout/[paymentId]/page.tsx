@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import Countdown from "./_components/countdown";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // import { useCreatePayment } from "@/features/payment/api/use-create-payment";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { checkPaymentStatus } from "@/actions";
@@ -18,9 +18,8 @@ export default function CheckoutPage() {
   const { paymentId } = useParams<{ paymentId: string }>();
 
   const { data, isLoading } = useGetPayment(paymentId);
-  // const paymentMutation = useCreatePayment();
 
-  // const [isExpired, setIsExpired] = useState<boolean>(false);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const copyPaymentCodeToClipboard = () => {
     navigator.clipboard
@@ -40,27 +39,16 @@ export default function CheckoutPage() {
   };
 
   const handleExpire = (expired: boolean) => {
-    // setIsExpired(expired);
-    console.log(expired);
+    setIsExpired(expired);
   };
 
-  // const handleRestartInterval = async () => {
-  //   try {
-  //   } catch (error) {
-  //     toast({
-  //       title: "Erro ao gerar novo código",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
-
   useEffect(() => {
-    console.log("passou");
     if (!isLoading && data) {
       const currentTime = new Date().getTime();
       const expirationTime =
-        new Date(data.createdAt).getTime() + 15 * 60 * 10 * 100; // 15 minutes in milliseconds
-      if (currentTime > expirationTime) {
+        new Date(data.createdAt).getTime() + 15 * 60 * 1000;
+
+      if (currentTime > expirationTime || isExpired) {
         toast({
           title: "Tempo expirado",
           description: "Seu tempo de pagamento expirou.",
@@ -69,30 +57,42 @@ export default function CheckoutPage() {
         router.push(`/checkout/${data.checkout.hash}`);
       }
     }
-  }, [data, isLoading, router, toast]);
+  }, [data, isLoading, router, toast, isExpired]);
 
   const getPaymentStatus = async () => {
-    const isPayed = await checkPaymentStatus(paymentId);
+    try {
+      const isPayed = await checkPaymentStatus(paymentId);
 
-    if (isPayed) {
-      router.replace(
-        data.checkout.redirectLink || `/checkout/${data.checkout.hash}`
-      );
+      if (isPayed) {
+        router.replace(
+          data?.checkout?.redirectLink || `/checkout/${data?.checkout?.hash}`
+        );
+        toast({
+          title: "Pagamento realizado com sucesso!",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar o status do pagamento:", error);
       toast({
-        title: "Pagamento realizado com sucesso!",
+        title: "Erro ao verificar status do pagamento",
+        description: (error as Error).message || "Erro desconhecido",
+        variant: "destructive",
       });
     }
   };
 
   useEffect(() => {
-    console.log("passou no checar pagamento");
+    console.log("Iniciando verificação de pagamento a cada 5 segundos");
+
     const interval = setInterval(() => {
       getPaymentStatus();
     }, 5000);
 
-    // Limpa o intervalo ao desmontar o componente
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      console.log("Limpando o intervalo de verificação de pagamento");
+      clearInterval(interval);
+    };
+  }, [paymentId, data, router]);
 
   if (!data || isLoading) {
     return (
