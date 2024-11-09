@@ -1,4 +1,5 @@
 import { createPayment, updateMetrics, updatePayment } from "@/actions";
+import { generateCheckoutHash } from "@/lib/utils";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
@@ -27,7 +28,10 @@ export async function POST(request: Request) {
   }
 
   try {
+    const id = generateCheckoutHash();
+
     const payment = await createPayment({
+      id,
       amount,
       customerEmail,
       customerName,

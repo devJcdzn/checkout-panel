@@ -5,6 +5,7 @@ import { format, subDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export interface CreatePaymentRequest {
+  id?: string;
   checkoutId: number;
   amount: number;
   expiration: number;

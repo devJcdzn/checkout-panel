@@ -64,9 +64,7 @@ export default function CheckoutPage() {
       const isPayed = await checkPaymentStatus(paymentId);
 
       if (isPayed) {
-        router.replace(
-          data?.checkout?.redirectLink || `/checkout/${data?.checkout?.hash}`
-        );
+        router.replace(data?.checkout?.redirectLink || `/success`);
         toast({
           title: "Pagamento realizado com sucesso!",
         });
