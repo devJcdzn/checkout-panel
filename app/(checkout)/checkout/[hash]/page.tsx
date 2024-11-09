@@ -19,9 +19,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(3, "Nome deve ter mais de 3 caracteres."),
-  email: z.string().email("E-mail inválido"),
-  tax: z.string().refine(
+  name: z
+    .string({ required_error: "Preencha os campos coretamente" })
+    .min(3, "Nome deve ter mais de 3 caracteres."),
+  email: z
+    .string({ required_error: "Preencha os campos coretamente" })
+    .email("E-mail inválido"),
+  tax: z.string({ required_error: "Preencha os campos coretamente" }).refine(
     (data) => {
       const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
       const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
@@ -173,7 +177,13 @@ export default function CheckoutPage() {
   return (
     <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
       <div className="mb-4"></div>
-      <div className="w-full flex-col lg:w-[60rem]"></div>
+      <div className="w-full flex-col lg:max-w-[60rem]">
+        <img
+          src={data?.banner || ""}
+          alt={`${data.slug}-banner`}
+          className="w-full h-full max-h-[220px] object-cover"
+        />
+      </div>
       <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
         <div className="w-full rounded-2xl border border-[#474747] bg-[#272727] p-4">
           <section className="flex items-start gap-2">

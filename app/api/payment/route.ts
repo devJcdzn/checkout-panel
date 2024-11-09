@@ -75,8 +75,6 @@ export async function POST(request: Request) {
       transactionId: response.id,
     });
 
-    await updateMetrics(payment.checkoutId, true);
-
     return new NextResponse(
       JSON.stringify({
         message: "Pagamento gerado com sucesso",

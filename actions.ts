@@ -64,7 +64,7 @@ export async function updatePayment(data: UpdatePaymentRequest) {
   }
 }
 
-export async function updateMetrics(id: number, conversions?: true) {
+export async function updateMetrics(id: number, conversions?: boolean) {
   const checkout = await prisma.checkout.findUnique({
     where: {
       id,
@@ -78,7 +78,6 @@ export async function updateMetrics(id: number, conversions?: true) {
       id,
     },
     data: {
-      impressions: checkout?.impressions + 1,
       conversions: conversions
         ? checkout?.conversions + 1
         : checkout.conversions,
@@ -92,9 +91,10 @@ export interface WeeklyMetricsResponse {
   conversions: number;
 }
 
-export async function getMetricsByDayOfWeek(): Promise<
-  WeeklyMetricsResponse[]
-> {
+export async function getMetricsByDayOfWeek(): Promise<{
+  last7Days: WeeklyMetricsResponse[];
+  weekData: any;
+}> {
   const endDate = new Date();
   const startDate = subDays(endDate, 6);
 
@@ -115,6 +115,42 @@ export async function getMetricsByDayOfWeek(): Promise<
     },
   });
 
+  const newData = await prisma.payment.groupBy({
+    by: ["createdAt"],
+    _sum: {
+      amount: true,
+    },
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+      status: "credited",
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  const weekData = Array.from({ length: 7 })
+    .map((_, index) => {
+      const date = subDays(endDate, index);
+      return {
+        day: format(date, "EEEE", { locale: ptBR }),
+        amount: 0,
+      };
+    })
+    .reverse();
+
+  newData.forEach((item) => {
+    const dayName = format(item.createdAt, "EEEE", { locale: ptBR });
+    const existingDay = weekData.find((d) => d.day === dayName);
+
+    if (existingDay) {
+      existingDay.amount = item._sum.amount || 0;
+    }
+  });
+
   const last7Days = Array.from({ length: 7 })
     .map((_, index) => {
       const date = subDays(endDate, index);
@@ -126,7 +162,6 @@ export async function getMetricsByDayOfWeek(): Promise<
     })
     .reverse();
 
-  // Substitui os valores no array `last7Days` com os dados reais retornados
   data.forEach((item) => {
     const dayName = format(item.updatedAt, "EEEE", { locale: ptBR });
     const existingDay = last7Days.find((d) => d.day === dayName);
@@ -137,7 +172,7 @@ export async function getMetricsByDayOfWeek(): Promise<
     }
   });
 
-  return last7Days;
+  return { last7Days, weekData };
 }
 
 export async function checkPaymentStatus(paymentId: string) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardAreaChart } from "@/components/area-chart";
 import { BarMultiple } from "@/components/bar-multiple";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,7 @@ import {
 import { useNewCheckout } from "@/features/checkouts/hooks/use-new-checkout";
 import { useNewProduct } from "@/features/products/hooks/use-new-product";
 import { useGetSummary } from "@/features/summary/api/use-get-summary";
+import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { CircleDollarSign, PlusCircle, TrendingUp } from "lucide-react";
 
@@ -92,7 +94,9 @@ export default function Home() {
                     Carregando...
                   </span>
                 ) : (
-                  data.totalConversions
+                  formatCurrency(data?.totalConversions ?? 0, {
+                    addPrefix: true,
+                  })
                 )}
               </div>
             </CardContent>
@@ -110,7 +114,7 @@ export default function Home() {
                     Carregando...
                   </span>
                 ) : (
-                  data.topCheckout?.model
+                  data?.topCheckout?.model
                 )}
               </div>
             </CardContent>
@@ -129,15 +133,15 @@ export default function Home() {
             ) : (
               <>
                 <CardContent className="pl-2">
-                  <BarMultiple data={data?.recentMetricsOfWeek} />
+                  <DashboardAreaChart data={data?.recentMetricsOfWeek} />
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-2 text-sm">
                   <div className="flex gap-2 font-medium leading-none">
-                    Relação impressções converões diárias
+                    Relação impressões conversões diárias
                     <TrendingUp className="h-4 w-4" />
                   </div>
                   <div className="leading-none text-muted-foreground">
-                    Todas as impressões e coversões contabilizadas.
+                    Todas as impressões e conversões contabilizadas.
                   </div>
                 </CardFooter>
               </>
@@ -151,14 +155,17 @@ export default function Home() {
             <CardContent>
               <div className="space-y-8">
                 {!isLoading &&
-                  data.recentCheckouts.map((checkout: any) => (
+                  data?.recentCheckouts.map((checkout) => (
                     <div className="flex items-center" key={checkout.id}>
                       <div className="ml-4 space-y-1">
                         <p className="text-sm font-medium leading-none">
                           {checkout.slug}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Conversões: {checkout.conversions}
+                          Conversões:{" "}
+                          {formatCurrency(checkout.conversions, {
+                            addPrefix: true,
+                          })}
                         </p>
                       </div>
                       <div className="ml-auto font-medium capitalize">

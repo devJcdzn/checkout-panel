@@ -1,3 +1,4 @@
+import { updateMetrics } from "@/actions";
 import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     return new NextResponse("Payment failed", { status: 400 });
   }
 
-  const paymentUpdated = await prisma.payment.update({
+  await prisma.payment.update({
     where: {
       id: payment?.id,
     },
@@ -49,6 +50,8 @@ export async function POST(request: Request) {
       checkout: true,
     },
   });
+
+  await updateMetrics(payment.checkoutId, true);
 
   return NextResponse.json({ success: true }, { status: 200 });
 }

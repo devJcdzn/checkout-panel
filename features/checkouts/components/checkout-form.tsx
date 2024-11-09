@@ -144,9 +144,9 @@ export function CheckoutForm({
               <FormItem>
                 <FormLabel>Banner</FormLabel>
                 <FormDescription>
-                  Imagem que será exibida como banner de propaganda na tela
-                  inicial do checkout. Caso não seja fornecida, ficará sem
-                  imagem alguma, apenas o checkout puro.
+                  Imagem(960x220px) que será exibida como banner de propaganda
+                  na tela inicial do checkout. Caso não seja fornecida, ficará
+                  sem imagem alguma, apenas o checkout puro.
                 </FormDescription>
                 <FormControl>
                   <ImageUpload
