@@ -6,15 +6,21 @@ export function middleware(request: NextRequest) {
   console.log("Middleware active. Host:", host);
 
   if (host === "app.checkseguro.pro") {
-    return NextResponse.rewrite(new URL("/admin", request.url));
+    const url = request.nextUrl.clone();
+    url.pathname = `/admin${url.pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   if (host === "checkseguro.pro") {
-    return NextResponse.rewrite(new URL("/admin", request.url));
+    const url = request.nextUrl.clone();
+    url.pathname = `/admin${url.pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   if (host === "pay.checkseguro.pro") {
-    return NextResponse.rewrite(new URL("/public", request.url));
+    const url = request.nextUrl.clone();
+    url.pathname = `/public${url.pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
