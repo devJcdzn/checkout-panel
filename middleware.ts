@@ -5,6 +5,18 @@ export function middleware(request: NextRequest) {
 
   console.log("Middleware active. Host:", host);
 
+  if (host === "app.checkseguro.pro") {
+    return NextResponse.rewrite(new URL("/admin", request.url));
+  }
+
+  if (host === "checkseguro.pro") {
+    return NextResponse.rewrite(new URL("/admin", request.url));
+  }
+
+  if (host === "pay.checkseguro.pro") {
+    return NextResponse.rewrite(new URL("/public", request.url));
+  }
+
   return NextResponse.next();
 }
 
