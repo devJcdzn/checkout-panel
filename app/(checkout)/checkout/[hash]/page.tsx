@@ -178,11 +178,13 @@ export default function CheckoutPage() {
     <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
       <div className="mb-4"></div>
       <div className="w-full flex-col lg:max-w-[60rem]">
-        <img
-          src={data?.banner || ""}
-          alt={`${data.slug}-banner`}
-          className="w-full h-full max-h-[220px] object-cover"
-        />
+        {data.banner && (
+          <img
+            src={data?.banner || ""}
+            alt={`${data.slug}-banner`}
+            className="w-full h-full max-h-[220px] object-cover"
+          />
+        )}
       </div>
       <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
         <div className="w-full rounded-2xl border border-[#474747] bg-[#272727] p-4">
