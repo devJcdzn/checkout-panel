@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const hostname = request.nextUrl.hostname;
+  const host = request.headers.get("host");
 
-  console.log("Middleware active. Hostname:", hostname);
+  console.log("Middleware active. Host:", host);
 
   return NextResponse.next();
 }
