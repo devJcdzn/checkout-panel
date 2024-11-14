@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
 
   // Redirecionar para a área pública para `app.seudominio.com`
   if (hostname === "pay.checkseguro.pro") {
-    return NextResponse.rewrite(new URL("/", request.url));
+    return NextResponse.rewrite(new URL("/checkout", request.url));
   }
 
   // Redirecionar para a página pública padrão para outros casos
