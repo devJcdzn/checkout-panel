@@ -22,6 +22,7 @@ export default function Page() {
 
   const productsQuery = useGetProducts();
   const products = productsQuery.data ?? [];
+  ({ products, checkouts });
 
   const isDisabled = checkoutsQuery.isLoading || productsQuery.isLoading;
 
@@ -60,7 +61,6 @@ export default function Page() {
               <DataTable
                 onDelete={(rows) => {
                   const ids = rows.map((row) => row.original.id);
-                  console.log(ids);
                 }}
                 filterKey="slug"
                 columns={checkoutColumns}
@@ -74,7 +74,6 @@ export default function Page() {
           <DataTable
             onDelete={(rows) => {
               const ids = rows.map((row) => row.original.id);
-              console.log(ids);
             }}
             filterKey="name"
             columns={productsColumns}

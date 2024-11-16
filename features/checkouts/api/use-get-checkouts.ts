@@ -21,8 +21,6 @@ export const useGetCheckouts = () => {
     queryFn: async () => {
       const { data } = await api.get<{ checkouts: ICheckout[] }>("/checkouts");
 
-      console.log(data);
-
       return data.checkouts.map((checkout) => ({
         ...checkout,
         product: {

@@ -33,8 +33,6 @@ export const useGetSummary = () => {
     queryFn: async () => {
       const { data } = await api.get<ISummary>("/summary");
 
-      console.log(data);
-
       return {
         ...data,
         recentCheckouts: data.recentCheckouts.map((checkout) => ({

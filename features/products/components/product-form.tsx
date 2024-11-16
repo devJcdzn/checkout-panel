@@ -60,8 +60,6 @@ export const ProductForm = ({
       price: priceInMiliunits,
     };
 
-    console.log({ product });
-
     onSubmit(product);
   };
 

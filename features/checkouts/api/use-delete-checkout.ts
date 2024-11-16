@@ -12,13 +12,13 @@ export const useDeleteCheckout = (hash?: string) => {
       return data;
     },
     onSuccess: () => {
-      toast.success("Transação deletada");
+      toast.success("Checkout deletado.");
       queryClient.invalidateQueries({ queryKey: ["checkout", { hash }] });
       queryClient.invalidateQueries({ queryKey: ["checkouts"] });
       queryClient.invalidateQueries({ queryKey: ["summary"] });
     },
     onError: () => {
-      toast.error("Falha ao deletar transação");
+      toast.error("Falha ao deletar checkout.");
     },
   });
 

@@ -21,6 +21,11 @@ export default function CheckoutPage() {
 
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
+  const bgColor = data.checkout?.lightMode ? "#e4e4e4" : "#171717";
+  const secondaryColor = data.checkout?.lightMode ? "#d4d4d4" : "#272727";
+  const textColor = data.checkout?.lightMode ? "#000" : "#e4e4e4";
+  const borderColor = data.checkout?.lightMode ? "#c4c4c4" : "#474747";
+
   const copyPaymentCodeToClipboard = () => {
     navigator.clipboard
       .writeText(data?.paymentCode)
@@ -80,27 +85,27 @@ export default function CheckoutPage() {
   };
 
   useEffect(() => {
-    console.log("Iniciando verificação de pagamento a cada 5 segundos");
-
     const interval = setInterval(() => {
       getPaymentStatus();
     }, 5000);
 
     return () => {
-      console.log("Limpando o intervalo de verificação de pagamento");
       clearInterval(interval);
     };
   }, [paymentId, data, router]);
 
   if (!data || isLoading) {
     return (
-      <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
+      <main
+        className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20"
+        style={{ backgroundColor: bgColor, color: textColor }}
+      >
         <div className="flex w-full max-w-[75rem] flex-col px-4 sm:px-0">
           <section className="flex w-full flex-col items-center justify-between py-6 sm:py-8 md:flex-row">
             <div className="flex w-full items-center gap-4">
               <Button
                 onClick={() => router.back()}
-                className="text-white flex h-10 w-10 items-center justify-center gap-2 rounded-[10px] border text-sm font-bold bg-transparent hover:bg-transparent"
+                className="flex h-10 w-10 items-center justify-center gap-2 rounded-[10px] border text-sm font-bold bg-transparent hover:bg-transparent"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,15 +122,15 @@ export default function CheckoutPage() {
                   <path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1"></path>
                 </svg>
               </Button>
-              <h1 className="text-white text-2xl font-bold sm:text-4xl">
+              <h1 className="text-2xl font-bold sm:text-4xl">
                 Detalhes do pedido
               </h1>
             </div>
           </section>
-          <div className="flex w-full flex-col gap-8 rounded-xl border bg-[#272727] p-6 sm:p-10">
+          <div className="flex w-full flex-col gap-8 rounded-xl border p-6 sm:p-10">
             <div className="w-ful flex flex-col gap-8 md:flex-row md:gap-12">
               <div className="flex w-full flex-col justify-start gap-8 sm:gap-12">
-                <h1 className="text-white max-w-[25rem] text-left text-3xl font-bold sm:text-4xl">
+                <h1 className="max-w-[25rem] text-left text-3xl font-bold sm:text-4xl">
                   Digitalize o <span className="text-blue-400">QR Code </span>
                   com seu smartphone
                 </h1>
@@ -268,13 +273,17 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
+    <main
+      className="flex h-full min-h-screen flex-col items-center pb-20"
+      style={{ backgroundColor: bgColor, color: textColor }}
+    >
       <div className="flex w-full max-w-[75rem] flex-col px-4 sm:px-0">
         <section className="flex w-full flex-col items-center justify-between py-6 sm:py-8 md:flex-row">
           <div className="flex w-full items-center gap-4">
             <Button
               onClick={() => router.back()}
-              className="text-white flex h-10 w-10 items-center justify-center gap-2 rounded-[10px] border text-sm font-bold bg-transparent hover:bg-transparent"
+              className=" flex h-10 w-10 items-center justify-center gap-2 rounded-[10px] border text-sm font-bold bg-transparent hover:bg-transparent"
+              style={{ borderColor }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -291,21 +300,24 @@ export default function CheckoutPage() {
                 <path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1"></path>
               </svg>
             </Button>
-            <h1 className="text-white text-2xl font-bold sm:text-4xl">
+            <h1 className=" text-2xl font-bold sm:text-4xl">
               Detalhes do pedido
             </h1>
           </div>
         </section>
-        <div className="flex w-full flex-col gap-8 rounded-xl border bg-[#272727] p-6 sm:p-10">
+        <div
+          className="flex w-full flex-col gap-8 rounded-xl border p-6 sm:p-10"
+          style={{ borderColor }}
+        >
           <div className="w-ful flex flex-col gap-8 md:flex-row md:gap-12">
             <div className="flex w-full flex-col justify-start gap-8 sm:gap-12">
-              <h1 className="text-white max-w-[25rem] text-left text-3xl font-bold sm:text-4xl">
+              <h1 className=" max-w-[25rem] text-left text-3xl font-bold sm:text-4xl">
                 Digitalize o <span className="text-blue-400">QR Code </span>com
                 seu smartphone
               </h1>
               <section className="">
                 <h3 className="text-muted-foreground">Valor</h3>
-                <h1 className="text-white text-4xl font-bold">
+                <h1 className="text-4xl font-bold">
                   {formatCurrency(data.amount, { addPrefix: true })}
                 </h1>
               </section>
@@ -316,7 +328,7 @@ export default function CheckoutPage() {
               />
 
               <div className="flex w-full max-w-[32rem]  flex-col items-start  justify-start">
-                <h3 className="text-white font-bold">Instruções</h3>
+                <h3 className=" font-bold">Instruções</h3>
                 <section className="mt-4 flex w-full gap-2">
                   <div className="flex h-[1.5rem] w-full max-w-[1.5rem] items-center justify-center rounded-lg bg-blue-400 font-semibold text-white">
                     1
@@ -346,7 +358,10 @@ export default function CheckoutPage() {
             </div>
 
             <div className="flex w-full flex-col">
-              <section className="relative flex w-fit justify-center self-center rounded-2xl border border-vanguard-border bg-white p-8">
+              <section
+                className="relative flex w-fit justify-center self-center rounded-2xl border border-vanguard-border bg-white p-8"
+                style={{ borderColor }}
+              >
                 <div className="flex false ">
                   {/* QR Code */}
                   <img
@@ -364,13 +379,13 @@ export default function CheckoutPage() {
                   </Button>
                 </div>
               </section>
-              <span className="text-white/80 mt-6 text-center text-sm">
+              <span className=" mt-6 text-center text-sm">
                 Não conseguiu ler o QR Code? Copie o código abaixo e insira-o
                 manualmente:
               </span>
               <textarea
                 readOnly
-                className="text-white mt-4 select-none resize-none rounded-xl bg-transparent px-4 py-2 text-center text-sm font-semibold outline-none ring-1 ring-border"
+                className=" mt-4 select-none resize-none rounded-xl bg-transparent px-4 py-2 text-center text-sm font-semibold outline-none ring-1 ring-border"
                 style={{ height: "96px" }}
               >
                 {data.paymentCode}

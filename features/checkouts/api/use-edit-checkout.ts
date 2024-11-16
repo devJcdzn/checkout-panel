@@ -8,7 +8,6 @@ export const useEditCheckout = (hash?: string) => {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log(data);
       const { data: response } = await api.put(`/checkout/${hash}`, data);
 
       return response;

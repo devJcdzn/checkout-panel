@@ -48,11 +48,6 @@ export async function POST(request: Request) {
       callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/fx`,
     });
 
-    console.log({
-      key: process.env.FX_BANK_API_TOKEN,
-      secret: process.env.FX_BANK_API_SECRET,
-    });
-
     const config = {
       method: "post",
       url: "https://ws.fxbank.com.br/api/v1/gateway/request-qrcode",

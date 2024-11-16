@@ -20,19 +20,20 @@ export async function POST(request: Request) {
   const color = formData.get("color")?.toString() || "";
   const redirectLink = formData.get("redirectLink")?.toString() || "";
   const model = formData.get("model")?.toString() || "sunize";
+  const lightMode = Boolean(formData.get("lightMode"));
   const banner = formData.get("banner") as File | null;
 
   if (!slug || !productId) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
   }
 
-  const uploadDir = path.join(
-    process.cwd(),
-    "public",
-    "uploads",
-    "checkouts",
-    model
-  );
+  // const uploadDir = path.join(
+  //   process.cwd(),
+  //   "public",
+  //   "uploads",
+  //   "checkouts",
+  //   model
+  // );
 
   const hash = generateCheckoutHash();
 
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
       productId: Number(productId),
       color,
       redirectLink,
+      lightMode,
       model,
       banner: banner ? `${process.env.ACCESS_R2_URL}/${fileName}` : null,
     },

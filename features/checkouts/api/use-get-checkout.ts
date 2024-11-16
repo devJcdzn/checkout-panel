@@ -10,6 +10,7 @@ export interface ICheckout {
   banner: string | null;
   redirectLink: string | null;
   product: IProduct;
+  lightMode?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,8 +23,6 @@ export const useGetCheckout = (hash?: string) => {
       const { data } = await api.get<{ checkout: ICheckout }>(
         `/checkout/${hash}`
       );
-
-      console.log(data);
 
       return {
         ...data.checkout,

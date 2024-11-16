@@ -9,8 +9,6 @@ export const useGetProduct = (id?: string) => {
     queryFn: async () => {
       const { data } = await api.get(`/product/${id}`);
 
-      console.log(data);
-
       return {
         ...data.product,
         price: convertAmountFromMiliunits(data.product.price),

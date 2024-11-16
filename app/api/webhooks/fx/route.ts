@@ -13,16 +13,6 @@ export async function POST(request: Request) {
     requestNumber,
   } = await request.json();
 
-  console.log({
-    idTransaction,
-    typeTransaction,
-    statusTransaction,
-    value,
-    paymentDate,
-    paymentCode,
-    requestNumber,
-  });
-
   const payment = await prisma.payment.findUnique({
     where: {
       transactionId: idTransaction,

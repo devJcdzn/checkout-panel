@@ -3,15 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host");
 
-  console.log("Middleware active. Host:", host);
-
-  if (host === "app.checkseguro.pro") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/admin${url.pathname}`;
-    return NextResponse.rewrite(url);
+  if (host?.includes("localhost")) {
+    return NextResponse.next();
   }
 
-  if (host === "checkseguro.pro") {
+  if (host === "app.checkseguro.pro" || host === "checkseguro.pro") {
     const url = request.nextUrl.clone();
     url.pathname = `/admin${url.pathname}`;
     return NextResponse.rewrite(url);

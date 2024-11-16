@@ -20,6 +20,7 @@ export async function GET(
       redirectLink: true,
       color: true,
       banner: true,
+      lightMode: true,
       impressions: true,
     },
   });

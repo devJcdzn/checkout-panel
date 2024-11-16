@@ -18,8 +18,6 @@ export const useGetProducts = () => {
     queryFn: async () => {
       const { data } = await api.get<{ products: IProduct[] }>("/products");
 
-      console.log(data);
-
       return data.products.map((product) => ({
         id: product.id,
         name: product.name,

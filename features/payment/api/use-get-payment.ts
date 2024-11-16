@@ -9,8 +9,6 @@ export const useGetPayment = (id?: string) => {
     queryFn: async () => {
       const { data } = await api.get(`/payment/${id}`);
 
-      console.log(data);
-
       return data.payment;
     },
   });

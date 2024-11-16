@@ -7,7 +7,6 @@ export const useCreateProduct = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log(data);
       const { data: response } = await api.post("/product", data);
 
       return response;

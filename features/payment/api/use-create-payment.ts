@@ -7,7 +7,6 @@ export const useCreatePayment = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log(data);
       const { data: response } = await api.post("/payment", data);
 
       return response;

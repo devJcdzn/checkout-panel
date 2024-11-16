@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomInput } from "@/components/custom-input";
 import {
   Form,
   FormField,
@@ -44,6 +45,11 @@ export default function CheckoutPage() {
   const paymentMutation = useCreatePayment();
   const router = useRouter();
 
+  const bgColor = data?.lightMode ? "#e4e4e4" : "#171717";
+  const secondaryColor = data?.lightMode ? "#d4d4d4" : "#272727";
+  const textColor = data?.lightMode ? "#000" : "#e4e4e4";
+  const borderColor = data?.lightMode ? "#c4c4c4" : "#474747";
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     // defaultValues: defaultValues,
@@ -57,18 +63,22 @@ export default function CheckoutPage() {
       amount: data?.product.price,
       checkoutId: data?.id,
     };
-    console.log(requestPaymentData);
     const response = await paymentMutation.mutateAsync(requestPaymentData);
     router.push(`/payment-checkout/${response.paymentData.id}`);
   };
 
   if (!data || isLoading) {
     return (
-      <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
+      <main
+        className={`flex h-full min-h-screen flex-col items-center pb-20`}
+        style={{ backgroundColor: bgColor }}
+      >
         <div className="mb-4"></div>
         <div className="w-full flex-col lg:w-[60rem]"></div>
         <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
-          <div className="w-full rounded-2xl border border-[#474747] bg-[#272727] p-4">
+          <div
+            className={`w-full rounded-2xl border border-[#474747] bg-[${secondaryColor}] p-4`}
+          >
             <section className="flex items-start gap-4">
               <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-[#b4b4b4]">
                 <Skeleton className="h-full w-full rounded-lg" />
@@ -81,7 +91,9 @@ export default function CheckoutPage() {
             </section>
           </div>
 
-          <div className="mt-4 w-full rounded-xl border border-[#474747] bg-[#272727] p-4">
+          <div
+            className={`mt-4 w-full rounded-xl border border-[#474747] bg-[${secondaryColor}] p-4`}
+          >
             <section className="flex items-center gap-2">
               <div
                 className="flex h-6 w-6 items-center justify-center rounded-md"
@@ -102,8 +114,7 @@ export default function CheckoutPage() {
           </div>
 
           <div
-            className="mt-4 w-full rounded-xl border border-[#474747] 
-            bg-[#272727] p-4"
+            className={`mt-4 w-full rounded-xl border border-[#474747] bg-[${secondaryColor}] p-4`}
           >
             <section className="flex items-center gap-2">
               <div
@@ -112,7 +123,9 @@ export default function CheckoutPage() {
                   backgroundColor: "rgb(76,175,80)",
                 }}
               >
-                <Loader2 className="h-6 w-6 animate-spin text-[#272727]" />
+                <Loader2
+                  className={`h-6 w-6 animate-spin text-[${secondaryColor}]`}
+                />
               </div>
               <Skeleton className="h-6 w-[250px]" />
             </section>
@@ -131,8 +144,7 @@ export default function CheckoutPage() {
               </section>
 
               <section
-                className="mt-4 flex flex-col gap-8 rounded-md 
-                bg-[#171717] px-6 py-4"
+                className={`mt-4 flex flex-col gap-8 rounded-md bg-[${bgColor}] px-6 py-4`}
               >
                 {Array(3).map((index) => (
                   <div className="flex items-start gap-4" key={index}>
@@ -151,7 +163,7 @@ export default function CheckoutPage() {
                     type="submit"
                     disabled={paymentMutation.isPending}
                     className={cn(
-                      "mt-4 flex w-full cursor-pointer animate-pulse items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold text-white hover:brightness-95"
+                      "mt-4 flex w-full cursor-pointer animate-pulse items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold  hover:brightness-95"
                     )}
                   >
                     Carregando
@@ -175,7 +187,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="flex h-full min-h-screen flex-col items-center bg-[#171717] pb-20">
+    <main
+      className={`flex h-full min-h-screen flex-col items-center bg-[${bgColor}] pb-20`}
+      style={{ backgroundColor: bgColor, color: textColor }}
+    >
       <div className="mb-4"></div>
       <div className="w-full flex-col lg:max-w-[60rem]">
         {data.banner && (
@@ -187,7 +202,10 @@ export default function CheckoutPage() {
         )}
       </div>
       <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
-        <div className="w-full rounded-2xl border border-[#474747] bg-[#272727] p-4">
+        <div
+          className={`w-full rounded-2xl border border-[#474747] p-4`}
+          style={{ borderColor }}
+        >
           <section className="flex items-start gap-2">
             <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-[#b4b4b4]">
               <img
@@ -198,14 +216,14 @@ export default function CheckoutPage() {
               />
             </div>
             <section>
-              <h2 className="text-white font-medium">{data.product.name}</h2>
+              <h2 className="font-medium">{data.product.name}</h2>
               <h2 className="text-2xl font-bold text-[#1CB877]">
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 }).format(data.product.price)}
               </h2>
-              <h3 className=" text-muted-foreground text-xs font-normal">
+              <h3 className="text-muted-foreground text-xs font-normal">
                 No Pix
               </h3>
             </section>
@@ -213,7 +231,10 @@ export default function CheckoutPage() {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="mt-4 w-full rounded-xl border border-[#474747] bg-[#272727] p-4">
+            <div
+              className={`mt-4 w-full rounded-xl border border-[#474747] p-4`}
+              style={{ borderColor }}
+            >
               <section className="flex items-center gap-2">
                 <div
                   className="flex h-6 w-6 items-center justify-center rounded-md"
@@ -226,15 +247,13 @@ export default function CheckoutPage() {
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     stroke="none"
-                    className="tabler-icon tabler-icon-user-filled h-4 w-4 text-[#272727]"
+                    className={`tabler-icon tabler-icon-user-filled h-4 w-4 text-[${secondaryColor}]`}
                   >
                     <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z"></path>
                     <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z"></path>
                   </svg>
                 </div>
-                <h2 className="text-lg font-semibold text-white">
-                  Identificação
-                </h2>
+                <h2 className="text-lg font-semibold">Identificação</h2>
               </section>
 
               <div className="mt-6 flex flex-col gap-4">
@@ -244,9 +263,7 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white">
-                          Nome completo
-                        </FormLabel>
+                        <FormLabel className="">Nome completo</FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -267,12 +284,11 @@ export default function CheckoutPage() {
                             </svg>
                           </div>
                           <Input
-                            className="text-white block w-full rounded-[10px] 
-                            bg-[#272727] py-[0.70rem] text-sm outline-none 
-                            placeholder:text-xs placeholder:text-muted-foreground 
-                            focus:ring-0 sm:text-sm sm:leading-6 
-                            pl-9 focus:border-white border border-[#474747] 
-                            focus:border-[1px]"
+                            className={`block w-full rounded-[10px] bg-[${secondaryColor}] py-[0.70rem] text-sm outline-none placeholder:text-xs placeholder:text-muted-foreground focus:ring-0 sm:text-sm sm:leading-6 pl-9 focus:border-white border border-[#474747] focus:border-[1px]`}
+                            style={{
+                              backgroundColor: secondaryColor,
+                              borderColor,
+                            }}
                             placeholder="Digite seu nome completo"
                             {...field}
                           />
@@ -291,7 +307,7 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white">E-mail</FormLabel>
+                        <FormLabel className="">E-mail</FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -311,15 +327,26 @@ export default function CheckoutPage() {
                               <path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
                             </svg>
                           </div>
-                          <Input
+                          {/* <Input
                             type="email"
-                            className="text-white block w-full rounded-[10px] 
+                            className="block w-full rounded-[10px] 
                             bg-[#272727] py-[0.70rem] text-sm outline-none 
                             placeholder:text-xs placeholder:text-muted-foreground 
                             focus:ring-0 sm:text-sm sm:leading-6 
                             pl-9 focus:border-white border border-[#474747] 
                             focus:border-[1px]"
                             placeholder="Digite seu nome e-mail"
+                            {...field}
+                          /> */}
+                          <CustomInput
+                            type="email"
+                            bgColor={secondaryColor}
+                            placeholder="Digite seu e-mail"
+                            className="focus:border-[rgb(76,175,80)]"
+                            style={{
+                              backgroundColor: secondaryColor,
+                              borderColor,
+                            }}
                             {...field}
                           />
                         </div>
@@ -337,7 +364,7 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white">CPF/CNPJ</FormLabel>
+                        <FormLabel className="">CPF/CNPJ</FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -358,8 +385,8 @@ export default function CheckoutPage() {
                               <path d="M14 19.88V22h2.12l5.17-5.17-2.12-2.12zM20 8l-6-6H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H12v-2.95l8-8V8zm-7 1V3.5L18.5 9H13zM22.71 14l-.71-.71a.996.996 0 0 0-1.41 0l-.71.71L22 16.12l.71-.71a.996.996 0 0 0 0-1.41z"></path>
                             </svg>
                           </div>
-                          <Input
-                            className="text-white block w-full rounded-[10px] 
+                          {/* <Input
+                            className=" block w-full rounded-[10px] 
                             bg-[#272727] py-[0.70rem] text-sm outline-none 
                             placeholder:text-xs placeholder:text-muted-foreground 
                             focus:ring-0 sm:text-sm sm:leading-6 
@@ -367,6 +394,21 @@ export default function CheckoutPage() {
                             focus:border-[1px]"
                             placeholder="Digite seu CPF/CNPJ"
                             {...field}
+                            onChange={(e) => {
+                              const formattedValue = formatCustomerTax(
+                                e.target.value
+                              );
+                              field.onChange(formattedValue);
+                            }}
+                          /> */}
+                          <CustomInput
+                            {...field}
+                            bgColor={secondaryColor}
+                            placeholder="Digite seu CPF/CNPJ"
+                            style={{
+                              backgroundColor: secondaryColor,
+                              borderColor,
+                            }}
                             onChange={(e) => {
                               const formattedValue = formatCustomerTax(
                                 e.target.value
@@ -386,8 +428,8 @@ export default function CheckoutPage() {
             </div>
 
             <div
-              className="mt-4 w-full rounded-xl border border-[#474747] 
-            bg-[#272727] p-4"
+              className={`mt-4 w-full rounded-xl border border-[#474747] bg-[${secondaryColor}] p-4`}
+              style={{ borderColor }}
             >
               <section className="flex items-center gap-2">
                 <div
@@ -403,12 +445,12 @@ export default function CheckoutPage() {
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     stroke="none"
-                    className="tabler-icon tabler-icon-credit-card-filled h-4 w-4 text-[#272727]"
+                    className={`tabler-icon tabler-icon-credit-card-filled h-4 w-4 text-[${secondaryColor}]`}
                   >
                     <path d="M22 10v6a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-6h20zm-14.99 4h-.01a1 1 0 1 0 .01 2a1 1 0 0 0 0 -2zm5.99 0h-2a1 1 0 0 0 0 2h2a1 1 0 0 0 0 -2zm5 -10a4 4 0 0 1 4 4h-20a4 4 0 0 1 4 -4h12z"></path>
                   </svg>
                 </div>
-                <h2 className="text-lg font-semibold text-white">Pagamento</h2>
+                <h2 className="text-lg font-semibold ">Pagamento</h2>
               </section>
 
               <div className="mt-6 flex flex-col gap-4">
@@ -455,8 +497,7 @@ export default function CheckoutPage() {
                 </section>
 
                 <section
-                  className="mt-4 flex flex-col gap-8 rounded-md 
-                bg-[#171717] px-6 py-4"
+                  className={`mt-4 flex flex-col gap-8 rounded-md bg-[${bgColor}] px-6 py-4`}
                 >
                   <div className="flex items-start gap-4">
                     <svg
@@ -475,7 +516,7 @@ export default function CheckoutPage() {
                     </svg>
                     <section>
                       <h2 className="font-semibold text-blue-500">Imediato</h2>
-                      <span className="text-white text-sm">
+                      <span className=" text-sm">
                         Ao selecionar a opção Gerar Pix o código para pagamento
                         estará disponível.
                       </span>
@@ -511,7 +552,7 @@ export default function CheckoutPage() {
                       <h2 className="font-semibold text-blue-500">
                         Pagamento Simples
                       </h2>
-                      <span className="text-white text-sm">
+                      <span className=" text-sm">
                         Para pagar basta abrir o aplicativo do seu banco,
                         procurar pelo PIX e escanear o QRcode.
                       </span>
@@ -528,7 +569,7 @@ export default function CheckoutPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="tabler-icon tabler-icon-shield-check h-8 w-8 text-vanguard-blue-400 "
+                      className="tabler-icon tabler-icon-shield-check h-8 w-8 text-blue-500 "
                     >
                       <path d="M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06"></path>
                       <path d="M15 19l2 2l4 -4"></path>
@@ -537,7 +578,7 @@ export default function CheckoutPage() {
                       <h2 className="font-semibold text-blue-500">
                         100% Seguro
                       </h2>
-                      <span className="text-white text-sm">
+                      <span className=" text-sm">
                         O pagamento com PIX foi desenvolvido pelo Banco Central
                         para facilitar suas compras.
                       </span>
@@ -545,10 +586,8 @@ export default function CheckoutPage() {
                   </div>
 
                   <section className="mt-2 flex items-center justify-between gap-2 ">
-                    <h3 className="text-lg font-semibold text-white ">
-                      Valor total:
-                    </h3>
-                    <h3 className="text-lg font-semibold text-white ">
+                    <h3 className="text-lg font-semibold">Valor total:</h3>
+                    <h3 className="text-lg font-semibold  ">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -561,7 +600,7 @@ export default function CheckoutPage() {
                       type="submit"
                       disabled={paymentMutation.isPending}
                       className={cn(
-                        "mt-4 flex w-full cursor-pointer items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold text-white hover:brightness-95"
+                        "mt-4 flex w-full cursor-pointer text-white items-center justify-center gap-4 rounded-lg bg-[#1CB877] px-2 py-4 text-lg font-bold  hover:brightness-95"
                       )}
                     >
                       {paymentMutation.isPending
@@ -601,7 +640,7 @@ export default function CheckoutPage() {
       <div className="mb-8 mt-4 flex flex-col items-center gap-1">
         <section className="flex flex-col items-center">
           <h2 className="text-xs font-normal text-muted-foreground ">
-            Pagamento processado por <span> FxBank</span> ©&nbsp;2024
+            Pagamento seguro.
           </h2>
           <h2 className="text-xs font-normal text-muted-foreground ">
             Todos os direitos reservados

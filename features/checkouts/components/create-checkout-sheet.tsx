@@ -19,6 +19,7 @@ const formSchema = z.object({
   banner: z.instanceof(File).nullable().optional(),
   redirectLink: z.string().url().optional(),
   model: z.string().optional(),
+  lightMode: z.boolean().default(false).optional(),
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -31,7 +32,6 @@ export const NewCheckoutSheet = () => {
   const productsQuery = useGetProducts();
   const productsOptions = Array.isArray(productsQuery.data)
     ? productsQuery.data.map((product: any) => {
-        console.log(product);
         return {
           label: product.name,
           value: product.id,
@@ -43,12 +43,14 @@ export const NewCheckoutSheet = () => {
   const isPending = checkoutMutation.isPending;
 
   const onSubmit = (data: FormValues) => {
-    console.log(data);
-
     const formData = new FormData();
     formData.append("slug", data.slug);
     formData.append("productId", data.productId.toString());
     formData.append("color", data.color || "");
+
+    if (data.lightMode) {
+      formData.append("lightMode", data.lightMode.toString());
+    }
 
     if (data.redirectLink) {
       formData.append("redirectLink", data.redirectLink);
@@ -62,7 +64,7 @@ export const NewCheckoutSheet = () => {
 
     checkoutMutation.mutate(formData, {
       onSuccess: ({ data }) => {
-        console.log(data);
+        console.log("Sucesso: ", data);
         onClose();
       },
     });

@@ -17,6 +17,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Select } from "@/components/custom-select";
 import { ImageUpload } from "@/components/upload-image";
 
@@ -27,6 +28,7 @@ const formSchema = z.object({
   banner: z.instanceof(File).nullable().optional(),
   redirectLink: z.string().url().optional(),
   model: z.string().optional(),
+  lightMode: z.boolean().default(false).optional(),
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -54,6 +56,7 @@ export function CheckoutForm({
   });
 
   const handleSubmit = (values: FormValues) => {
+    console.log(values);
     onSubmit(values);
   };
 
@@ -63,6 +66,25 @@ export function CheckoutForm({
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
+        <FormField
+          name="lightMode"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Modo</FormLabel>
+              <div className="space-x-2 flex items-center">
+                <span className="text-sm">Dark</span>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <span className="text-sm">Light</span>
+              </div>
+            </FormItem>
+          )}
+        />
         <FormField
           name="productId"
           control={form.control}

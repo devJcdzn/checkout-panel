@@ -30,6 +30,7 @@ model Checkout {
   hash      String  @unique @default(cuid())
 
   color        String?
+  lightMode    Boolean? @default(false)
   banner       String?
   redirectLink String?
 

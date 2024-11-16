@@ -51,7 +51,6 @@ export function EditCheckoutSheet() {
   const isLoading = checkoutQuery.isLoading || productsQuery.isLoading;
 
   const onSubmit = (data: FormValues) => {
-    console.log(data);
     const formData = new FormData();
     formData.append("slug", data.slug);
     formData.append("productId", data.productId.toString());
@@ -76,7 +75,6 @@ export function EditCheckoutSheet() {
     const ok = await confirm();
 
     if (ok) {
-      console.log("ok");
       deleteMutation.mutate(undefined, {
         onSuccess: () => {
           onClose();
