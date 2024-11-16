@@ -22,7 +22,6 @@ export default function Page() {
 
   const productsQuery = useGetProducts();
   const products = productsQuery.data ?? [];
-  ({ products, checkouts });
 
   const isDisabled = checkoutsQuery.isLoading || productsQuery.isLoading;
 
