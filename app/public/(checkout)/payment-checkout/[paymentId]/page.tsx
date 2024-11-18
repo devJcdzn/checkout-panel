@@ -21,10 +21,10 @@ export default function CheckoutPage() {
 
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
-  const bgColor = data.checkout?.lightMode ? "#e4e4e4" : "#171717";
-  const secondaryColor = data.checkout?.lightMode ? "#d4d4d4" : "#272727";
-  const textColor = data.checkout?.lightMode ? "#000" : "#e4e4e4";
-  const borderColor = data.checkout?.lightMode ? "#c4c4c4" : "#474747";
+  const bgColor = data?.checkout?.lightMode ? "#e4e4e4" : "#171717";
+  const secondaryColor = data?.checkout?.lightMode ? "#d4d4d4" : "#272727";
+  const textColor = data?.checkout?.lightMode ? "#000" : "#e4e4e4";
+  const borderColor = data?.checkout?.lightMode ? "#c4c4c4" : "#474747";
 
   const copyPaymentCodeToClipboard = () => {
     navigator.clipboard
@@ -59,7 +59,7 @@ export default function CheckoutPage() {
           description: "Seu tempo de pagamento expirou.",
           variant: "destructive",
         });
-        router.push(`/checkout/${data.checkout.hash}`);
+        router.push(`/checkout/${data?.checkout?.hash}`);
       }
     }
   }, [data, isLoading, router, toast, isExpired]);
