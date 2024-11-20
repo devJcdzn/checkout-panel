@@ -429,7 +429,7 @@ export default function CheckoutPage() {
 
             <div
               className={`mt-4 w-full rounded-xl border border-[#474747] bg-[${secondaryColor}] p-4`}
-              style={{ borderColor }}
+              style={{ borderColor, backgroundColor: secondaryColor }}
             >
               <section className="flex items-center gap-2">
                 <div
@@ -497,7 +497,8 @@ export default function CheckoutPage() {
                 </section>
 
                 <section
-                  className={`mt-4 flex flex-col gap-8 rounded-md bg-[${bgColor}] px-6 py-4`}
+                  className={`mt-4 flex flex-col gap-8 rounded-md px-6 py-4`}
+                  style={{ backgroundColor: bgColor }}
                 >
                   <div className="flex items-start gap-4">
                     <svg
