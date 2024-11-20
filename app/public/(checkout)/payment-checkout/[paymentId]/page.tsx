@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const bgColor = data?.checkout?.lightMode ? "#e4e4e4" : "#171717";
-  const secondaryColor = data?.checkout?.lightMode ? "#d4d4d4" : "#272727";
+  const secondaryColor = data?.checkout?.lightMode ? "#fff" : "#272727";
   const textColor = data?.checkout?.lightMode ? "#000" : "#e4e4e4";
   const borderColor = data?.checkout?.lightMode ? "#c4c4c4" : "#474747";
 
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
         </section>
         <div
           className="flex w-full flex-col gap-8 rounded-xl border p-6 sm:p-10"
-          style={{ borderColor }}
+          style={{ borderColor, backgroundColor: secondaryColor }}
         >
           <div className="w-ful flex flex-col gap-8 md:flex-row md:gap-12">
             <div className="flex w-full flex-col justify-start gap-8 sm:gap-12">

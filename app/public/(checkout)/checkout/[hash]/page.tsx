@@ -46,7 +46,7 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const bgColor = data?.lightMode ? "#e4e4e4" : "#171717";
-  const secondaryColor = data?.lightMode ? "#d4d4d4" : "#272727";
+  const secondaryColor = data?.lightMode ? "#fff" : "#272727";
   const textColor = data?.lightMode ? "#000" : "#e4e4e4";
   const borderColor = data?.lightMode ? "#c4c4c4" : "#474747";
 
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
       <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
         <div
           className={`w-full rounded-2xl border border-[#474747] p-4`}
-          style={{ borderColor }}
+          style={{ borderColor, backgroundColor: secondaryColor }}
         >
           <section className="flex items-start gap-2">
             <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-[#b4b4b4]">
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div
               className={`mt-4 w-full rounded-xl border border-[#474747] p-4`}
-              style={{ borderColor }}
+              style={{ borderColor, backgroundColor: secondaryColor }}
             >
               <section className="flex items-center gap-2">
                 <div
