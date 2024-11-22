@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const host = request.headers.get("host");
+  if (process.env.NODE_ENV === "production") {
+    const host = request.headers.get("host");
 
-  if (host?.includes("localhost")) {
+    if (host === "dashboard.pixseguro.pro" || host === "pixseguro.pro") {
+      const url = request.nextUrl.clone();
+      url.pathname = `/admin${url.pathname}`;
+      return NextResponse.rewrite(url);
+    }
+
+    if (host === "pay.pixseguro.pro") {
+      const url = request.nextUrl.clone();
+      url.pathname = `/public${url.pathname}`;
+      return NextResponse.rewrite(url);
+    }
+
     return NextResponse.next();
-  }
-
-  if (host === "app.checkseguro.pro" || host === "checkseguro.pro") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/admin${url.pathname}`;
-    return NextResponse.rewrite(url);
-  }
-
-  if (host === "pay.checkseguro.pro") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/public${url.pathname}`;
-    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
