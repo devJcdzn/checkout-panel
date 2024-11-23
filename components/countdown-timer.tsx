@@ -67,7 +67,7 @@ export const CountdownTimer = ({
 
       {hasBottomBox && bottomBox && (
         <div
-          className="p-3 text-white flex flex-col font-bold items-center gap-1"
+          className="p-3 text-white text-sm uppercase flex flex-col font-bold items-center gap-1"
           style={{ backgroundColor: bottomBox.color }}
         >
           <span>{bottomBox.phrase}</span>

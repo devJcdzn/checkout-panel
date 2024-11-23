@@ -202,7 +202,7 @@ export default function CheckoutPage() {
       <div className="mb-4 w-full lg:max-w-[60rem]">
         {shouldBeRenderTimer && (
           <CountdownTimer
-            hasBottomBox={data.timer}
+            hasBottomBox={!!data.timer}
             bottomBox={{
               color: data.bottomBoxColor || "green",
               phrase: data.bottomBoxPhrase || "Pagamento Priorizado",
