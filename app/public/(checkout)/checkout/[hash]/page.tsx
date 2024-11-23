@@ -51,6 +51,13 @@ export default function CheckoutPage() {
   const textColor = data?.lightMode ? "#000" : "#e4e4e4";
   const borderColor = data?.lightMode ? "#c4c4c4" : "#474747";
 
+  const shouldBeRenderTimer =
+    data?.timer ||
+    data?.topBoxColor ||
+    data?.topBoxPhrase ||
+    data?.bottomBoxColor ||
+    data?.bottomBoxPhrase;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     // defaultValues: defaultValues,
@@ -193,7 +200,7 @@ export default function CheckoutPage() {
       style={{ backgroundColor: bgColor, color: textColor }}
     >
       <div className="mb-4 w-full lg:max-w-[60rem]">
-        {data.timer && (
+        {shouldBeRenderTimer && (
           <CountdownTimer
             bottomBox={{
               color: data.bottomBoxColor || "green",
