@@ -14,10 +14,16 @@ interface BottomBox {
 interface Props {
   topBox?: TopBox;
   bottomBox?: BottomBox;
+  hasBottomBox: boolean;
   initialTime: number;
 }
 
-export const CountdownTimer = ({ topBox, bottomBox, initialTime }: Props) => {
+export const CountdownTimer = ({
+  topBox,
+  bottomBox,
+  initialTime,
+  hasBottomBox = false,
+}: Props) => {
   const [timeLeft, setTimeLeft] = useState<number>(initialTime * 60);
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export const CountdownTimer = ({ topBox, bottomBox, initialTime }: Props) => {
     <div className="text-center">
       {topBox && (
         <div
-          className="text-white p-3 text-bold flex items-center justify-center gap-1"
+          className="text-white text-sm uppercase p-3 text-bold flex items-center justify-center gap-1"
           style={{ backgroundColor: topBox.color }}
         >
           <svg
@@ -59,7 +65,7 @@ export const CountdownTimer = ({ topBox, bottomBox, initialTime }: Props) => {
         </div>
       )}
 
-      {bottomBox && (
+      {hasBottomBox && bottomBox && (
         <div
           className="p-3 text-white flex flex-col font-bold items-center gap-1"
           style={{ backgroundColor: bottomBox.color }}
