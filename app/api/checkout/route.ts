@@ -21,7 +21,16 @@ export async function POST(request: Request) {
   const redirectLink = formData.get("redirectLink")?.toString() || "";
   const model = formData.get("model")?.toString() || "sunize";
   const lightMode = Boolean(formData.get("lightMode"));
+
+  const timer = formData.get("timer")?.toString();
+  const topBoxColor = formData.get("topBoxColor")?.toString();
+  const topBoxPhrase = formData.get("topBoxPhrase")?.toString();
+  const bottomBoxColor = formData.get("bottomBoxColor")?.toString();
+  const bottomBoxPhrase = formData.get("bottomBoxPhrase")?.toString();
+
   const banner = formData.get("banner") as File | null;
+  const bottomBanner = formData.get("bottomBanner") as File | null;
+  const testimonials = formData.get("testimonials") as File | null;
 
   if (!slug || !productId) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
@@ -37,19 +46,53 @@ export async function POST(request: Request) {
 
   const hash = generateCheckoutHash();
 
-  let fileName;
+  let bannerFileName;
+  let bottomBannerFileName;
+  let testimonialsFileName;
 
   if (banner) {
     const arrayBuffer = await banner.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    fileName = `${Date.now()}-${banner.name}`;
+    const bannerBuffer = Buffer.from(arrayBuffer);
+    bannerFileName = `${Date.now()}-${banner.name}-banner`;
 
     await s3
       .upload({
         Bucket: process.env.R2_BUCKET_NAME!,
-        Key: fileName,
-        Body: buffer,
+        Key: bannerFileName,
+        Body: bannerBuffer,
         ContentType: banner.type,
+        ACL: "public-read",
+      })
+      .promise();
+  }
+
+  if (bottomBanner) {
+    const arrayBuffer = await bottomBanner.arrayBuffer();
+    const bottomBannerBuffer = Buffer.from(arrayBuffer);
+    bottomBannerFileName = `${Date.now()}-${bottomBanner.name}-bottomBanner`;
+
+    await s3
+      .upload({
+        Bucket: process.env.R2_BUCKET_NAME!,
+        Key: bottomBannerFileName,
+        Body: bottomBannerBuffer,
+        ContentType: bottomBanner.type,
+        ACL: "public-read",
+      })
+      .promise();
+  }
+
+  if (testimonials) {
+    const arrayBuffer = await testimonials.arrayBuffer();
+    const testimonialsBuffer = Buffer.from(arrayBuffer);
+    testimonialsFileName = `${Date.now()}-${testimonials.name}-testimonials`;
+
+    await s3
+      .upload({
+        Bucket: process.env.R2_BUCKET_NAME!,
+        Key: testimonialsFileName,
+        Body: testimonialsBuffer,
+        ContentType: testimonials.type,
         ACL: "public-read",
       })
       .promise();
@@ -64,7 +107,18 @@ export async function POST(request: Request) {
       redirectLink,
       lightMode,
       model,
-      banner: banner ? `${process.env.ACCESS_R2_URL}/${fileName}` : null,
+      banner: banner ? `${process.env.ACCESS_R2_URL}/${bannerFileName}` : null,
+      bottomBanner: bottomBanner
+        ? `${process.env.ACCESS_R2_URL}/${bottomBannerFileName}`
+        : null,
+      testimonials: testimonials
+        ? `${process.env.ACCESS_R2_URL}/${testimonialsFileName}`
+        : null,
+      timer: Number(timer),
+      topBoxColor,
+      topBoxPhrase,
+      bottomBoxColor,
+      bottomBoxPhrase,
     },
     select: {
       hash: true,

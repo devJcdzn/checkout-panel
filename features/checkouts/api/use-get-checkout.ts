@@ -8,11 +8,19 @@ export interface ICheckout {
   slug: string;
   color: string | null;
   banner: string | null;
+  bottomBanner: string | null;
+  testimonials: string | null;
   redirectLink: string | null;
   product: IProduct;
   lightMode?: boolean;
   createdAt: Date;
   updatedAt: Date;
+
+  timer: number;
+  topBoxColor: string;
+  topBoxPhrase: string;
+  bottomBoxColor: string;
+  bottomBoxPhrase: string;
 }
 
 export const useGetCheckout = (hash?: string) => {
@@ -23,6 +31,8 @@ export const useGetCheckout = (hash?: string) => {
       const { data } = await api.get<{ checkout: ICheckout }>(
         `/checkout/${hash}`
       );
+
+      console.log(data);
 
       return {
         ...data.checkout,

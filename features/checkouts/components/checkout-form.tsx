@@ -15,6 +15,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -26,9 +37,16 @@ const formSchema = z.object({
   productId: z.number(),
   color: z.string().optional(),
   banner: z.instanceof(File).nullable().optional(),
+  bottomBanner: z.instanceof(File).nullable().optional(),
+  testimonials: z.instanceof(File).nullable().optional(),
   redirectLink: z.string().url().optional(),
   model: z.string().optional(),
   lightMode: z.boolean().default(false).optional(),
+  timer: z.coerce.number().max(30).optional(),
+  topBoxColor: z.string().optional(),
+  topBoxPhrase: z.string().optional(),
+  bottomBoxColor: z.string().optional(),
+  bottomBoxPhrase: z.string().optional(),
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -56,7 +74,6 @@ export function CheckoutForm({
   });
 
   const handleSubmit = (values: FormValues) => {
-    console.log(values);
     onSubmit(values);
   };
 
@@ -66,25 +83,140 @@ export function CheckoutForm({
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
-        <FormField
-          name="lightMode"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Modo</FormLabel>
-              <div className="space-x-2 flex items-center">
-                <span className="text-sm">Dark</span>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <span className="text-sm">Light</span>
+        <div className="flex items-center justify-between gap-2">
+          <FormField
+            name="lightMode"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Modo</FormLabel>
+                <div className="space-x-2 flex items-center">
+                  <span className="text-xs">Dark</span>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <span className="text-xs">Light</span>
+                </div>
+              </FormItem>
+            )}
+          />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button">Timer</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Configuração do timer</DialogTitle>
+                <DialogDescription>
+                  Configurações prévias do timer opcional do checkout. (Caso não
+                  deseje o timer deixar os campos vazios)
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid flex-1 gap-2">
+                <FormField
+                  name="topBoxColor"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cor da caixa superior</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={disabled}
+                          placeholder="Cor (hexadecimal)"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="topBoxPhrase"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Frase da Caixa Superior</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={disabled}
+                          placeholder="Ex: Pagamento Priorizado!"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="bottomBoxColor"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cor da caixa inferior</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={disabled}
+                          placeholder="Cor (hexadecimal)"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="bottomBoxPhrase"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Frase da Caixa Inferior</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={disabled}
+                          placeholder="Ex: Frase de contagem!"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="timer"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tempo do Timer</FormLabel>
+                      <FormDescription>
+                        Tempo do timer em minutos que aparecerá na parte
+                        superior do checkout.
+                      </FormDescription>
+                      <FormControl>
+                        <Input
+                          disabled={disabled}
+                          type="number"
+                          min={0}
+                          max={30}
+                          placeholder="max:30min"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
-            </FormItem>
-          )}
-        />
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Confirmar
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <FormField
           name="productId"
           control={form.control}
@@ -103,7 +235,7 @@ export function CheckoutForm({
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           name="model"
           control={form.control}
           render={({ field }) => (
@@ -120,7 +252,7 @@ export function CheckoutForm({
               </FormControl>
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           name="slug"
           control={form.control}
@@ -169,6 +301,58 @@ export function CheckoutForm({
                   Imagem(960x220px) que será exibida como banner de propaganda
                   na tela inicial do checkout. Caso não seja fornecida, ficará
                   sem imagem alguma, apenas o checkout puro.
+                </FormDescription>
+                <FormControl>
+                  <ImageUpload
+                    onChange={(file) => field.onChange(file)}
+                    placeholder="Selecione uma imagem"
+                    disabled={disabled}
+                  />
+                </FormControl>
+                <FormMessage>
+                  {form.formState.errors.banner?.message}
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+        )}
+
+        {!id && (
+          <FormField
+            name="bottomBanner"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Banner de rodapé(opcional)</FormLabel>
+                <FormDescription>
+                  Imagem(960x220px) que será exibida como banner de propaganda
+                  na abaixo do checkout.
+                </FormDescription>
+                <FormControl>
+                  <ImageUpload
+                    onChange={(file) => field.onChange(file)}
+                    placeholder="Selecione uma imagem"
+                    disabled={disabled}
+                  />
+                </FormControl>
+                <FormMessage>
+                  {form.formState.errors.banner?.message}
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+        )}
+
+        {!id && (
+          <FormField
+            name="testimonials"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem de avaliações(opcional)</FormLabel>
+                <FormDescription>
+                  Imagem Vertical que será exibida como avaliações e depoimentos
+                  no checkout.
                 </FormDescription>
                 <FormControl>
                   <ImageUpload

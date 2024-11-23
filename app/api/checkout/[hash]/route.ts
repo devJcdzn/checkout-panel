@@ -22,6 +22,13 @@ export async function GET(
       banner: true,
       lightMode: true,
       impressions: true,
+      topBoxColor: true,
+      timer: true,
+      topBoxPhrase: true,
+      bottomBoxColor: true,
+      bottomBoxPhrase: true,
+      bottomBanner: true,
+      testimonials: true,
     },
   });
 

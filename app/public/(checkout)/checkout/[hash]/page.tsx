@@ -1,5 +1,6 @@
 "use client";
 
+import { CountdownTimer } from "@/components/countdown-timer";
 import { CustomInput } from "@/components/custom-input";
 import {
   Form,
@@ -21,12 +22,12 @@ import { z } from "zod";
 
 const formSchema = z.object({
   name: z
-    .string({ required_error: "Preencha os campos coretamente" })
+    .string({ required_error: "Preencha os campos corretamente" })
     .min(3, "Nome deve ter mais de 3 caracteres."),
   email: z
-    .string({ required_error: "Preencha os campos coretamente" })
+    .string({ required_error: "Preencha os campos corretamente" })
     .email("E-mail inválido"),
-  tax: z.string({ required_error: "Preencha os campos coretamente" }).refine(
+  tax: z.string({ required_error: "Preencha os campos corretamente" }).refine(
     (data) => {
       const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
       const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
@@ -191,7 +192,21 @@ export default function CheckoutPage() {
       className={`flex h-full min-h-screen flex-col items-center bg-[${bgColor}] pb-20`}
       style={{ backgroundColor: bgColor, color: textColor }}
     >
-      <div className="mb-4"></div>
+      <div className="mb-4 w-full lg:max-w-[60rem]">
+        {data.timer && (
+          <CountdownTimer
+            bottomBox={{
+              color: data.bottomBoxColor || "green",
+              phrase: data.bottomBoxPhrase || "Pagamento Priorizado",
+            }}
+            topBox={{
+              color: data.topBoxColor || "red",
+              phrase: data.topBoxPhrase || "Frase de pagamento ativo",
+            }}
+            initialTime={data.timer}
+          />
+        )}
+      </div>
       <div className="w-full flex-col lg:max-w-[60rem]">
         {data.banner && (
           <img
@@ -638,6 +653,27 @@ export default function CheckoutPage() {
           </form>
         </Form>
       </div>
+      <div className="w-full flex-col mt-2 lg:max-w-[60rem]">
+        {data.bottomBanner && (
+          <img
+            src={data?.bottomBanner || ""}
+            alt={`${data.slug}-bottomBanner`}
+            className="w-full h-full max-h-[220px] object-cover"
+          />
+        )}
+      </div>
+      {data.testimonials && (
+        <div
+          className="w-full flex-col max-w-[90%] lg:max-w-[60rem] mt-3 p-2 rounded-xl"
+          style={{ backgroundColor: secondaryColor }}
+        >
+          <img
+            src={data?.testimonials}
+            alt={`${data.slug}-testimonials`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
       <div className="mb-8 mt-4 flex flex-col items-center gap-1">
         <section className="flex flex-col items-center">
           <h2 className="text-xs font-normal text-muted-foreground ">
