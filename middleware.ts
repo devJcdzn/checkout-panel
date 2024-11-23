@@ -4,13 +4,17 @@ export function middleware(request: NextRequest) {
   if (process.env.NODE_ENV === "production") {
     const host = request.headers.get("host");
 
-    if (host === "dashboard.pixseguro.pro" || host === "pixseguro.pro") {
+    if (
+      host === "dashboard.pixseguro.pro" ||
+      host === "pixseguro.pro" ||
+      host === "test.pixseguro.pro"
+    ) {
       const url = request.nextUrl.clone();
       url.pathname = `/admin${url.pathname}`;
       return NextResponse.rewrite(url);
     }
 
-    if (host === "pay.pixseguro.pro") {
+    if (host === "pay.pixseguro.pro" || host === "testpay.pixseguro.pro") {
       const url = request.nextUrl.clone();
       url.pathname = `/public${url.pathname}`;
       return NextResponse.rewrite(url);
