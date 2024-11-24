@@ -33,10 +33,10 @@ model Checkout {
   lightMode    Boolean? @default(false)
   redirectLink String?
 
-  topBoxColor     String? @default("green")
-  topBoxPhrase    String? @default("Pagamento Priorizado!")
-  bottomBoxColor  String? @default("red")
-  bottomBoxPhrase String? @default("Frase de contagem ativa!")
+  topBoxColor     String?
+  topBoxPhrase    String?
+  bottomBoxColor  String?
+  bottomBoxPhrase String?
   timer           Int?
 
   banner       String?

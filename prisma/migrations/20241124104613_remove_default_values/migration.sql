@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Checkout" ALTER COLUMN "bottomBoxColor" DROP DEFAULT,
+ALTER COLUMN "bottomBoxPhrase" DROP DEFAULT,
+ALTER COLUMN "topBoxColor" DROP DEFAULT,
+ALTER COLUMN "topBoxPhrase" DROP DEFAULT;
