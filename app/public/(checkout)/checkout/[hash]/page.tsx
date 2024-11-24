@@ -204,12 +204,12 @@ export default function CheckoutPage() {
           <CountdownTimer
             hasBottomBox={!!data.timer}
             bottomBox={{
-              color: data.bottomBoxColor || "green",
-              phrase: data.bottomBoxPhrase || "Pagamento Priorizado",
+              color: data.bottomBoxColor,
+              phrase: data.bottomBoxPhrase,
             }}
             topBox={{
-              color: data.topBoxColor || "red",
-              phrase: data.topBoxPhrase || "Frase de pagamento ativo",
+              color: data.topBoxColor,
+              phrase: data.topBoxPhrase,
             }}
             initialTime={data.timer}
           />

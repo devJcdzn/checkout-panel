@@ -47,7 +47,7 @@ export const CountdownTimer = ({
     <div className="text-center">
       {topBox && (
         <div
-          className="text-white text-sm uppercase p-3 font-bold flex items-center justify-center gap-1"
+          className="text-white text-base uppercase p-3 font-bold flex items-center justify-center gap-1"
           style={{ backgroundColor: topBox.color }}
         >
           <svg
@@ -67,7 +67,7 @@ export const CountdownTimer = ({
 
       {hasBottomBox && bottomBox && (
         <div
-          className="p-3 text-white text-sm uppercase flex flex-col font-bold items-center gap-1"
+          className="p-3 text-white text-base uppercase flex flex-col font-bold items-center gap-1"
           style={{ backgroundColor: bottomBox.color }}
         >
           <span>{bottomBox.phrase}</span>
