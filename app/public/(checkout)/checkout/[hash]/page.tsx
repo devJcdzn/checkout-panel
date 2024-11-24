@@ -46,6 +46,8 @@ export default function CheckoutPage() {
   const paymentMutation = useCreatePayment();
   const router = useRouter();
 
+  const hasTopBox = !!data?.topBoxColor && !!data.topBoxPhrase;
+
   const bgColor = data?.lightMode ? "#e4e4e4" : "#171717";
   const secondaryColor = data?.lightMode ? "#fff" : "#272727";
   const textColor = data?.lightMode ? "#000" : "#e4e4e4";
@@ -203,6 +205,7 @@ export default function CheckoutPage() {
         {shouldBeRenderTimer && (
           <CountdownTimer
             hasBottomBox={!!data.timer}
+            hasTopBox={hasTopBox}
             bottomBox={{
               color: data.bottomBoxColor,
               phrase: data.bottomBoxPhrase,

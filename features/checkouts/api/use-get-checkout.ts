@@ -16,11 +16,11 @@ export interface ICheckout {
   createdAt: Date;
   updatedAt: Date;
 
-  timer: number;
-  topBoxColor: string;
-  topBoxPhrase: string;
-  bottomBoxColor: string;
-  bottomBoxPhrase: string;
+  timer: number | null;
+  topBoxColor: string | null;
+  topBoxPhrase: string | null;
+  bottomBoxColor: string | null;
+  bottomBoxPhrase: string | null;
 }
 
 export const useGetCheckout = (hash?: string) => {

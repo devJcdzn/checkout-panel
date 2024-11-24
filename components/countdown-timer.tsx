@@ -14,7 +14,8 @@ interface BottomBox {
 interface Props {
   topBox?: TopBox;
   bottomBox?: BottomBox;
-  hasBottomBox: boolean;
+  hasTopBox?: boolean;
+  hasBottomBox?: boolean;
   initialTime: number;
 }
 
@@ -23,6 +24,7 @@ export const CountdownTimer = ({
   bottomBox,
   initialTime,
   hasBottomBox = false,
+  hasTopBox = false,
 }: Props) => {
   const [timeLeft, setTimeLeft] = useState<number>(initialTime * 60);
 
