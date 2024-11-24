@@ -16,7 +16,7 @@ export interface ICheckout {
   createdAt: Date;
   updatedAt: Date;
 
-  timer: number | null;
+  timer: number;
   topBoxColor: string | null;
   topBoxPhrase: string | null;
   bottomBoxColor: string | null;

@@ -2,13 +2,13 @@ import { Timer } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface TopBox {
-  color: string;
-  phrase: string;
+  color: string | null;
+  phrase: string | null;
 }
 
 interface BottomBox {
-  color: string;
-  phrase: string;
+  color: string | null;
+  phrase: string | null;
 }
 
 interface Props {
@@ -47,7 +47,7 @@ export const CountdownTimer = ({
 
   return (
     <div className="text-center">
-      {topBox && (
+      {hasTopBox && topBox?.color && (
         <div
           className="text-white text-base uppercase p-3 font-bold flex items-center justify-center gap-1"
           style={{ backgroundColor: topBox.color }}
@@ -67,7 +67,7 @@ export const CountdownTimer = ({
         </div>
       )}
 
-      {hasBottomBox && bottomBox && (
+      {hasBottomBox && bottomBox?.color && (
         <div
           className="p-3 text-white text-base uppercase flex flex-col font-bold items-center gap-1"
           style={{ backgroundColor: bottomBox.color }}
