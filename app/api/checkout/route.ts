@@ -1,9 +1,7 @@
 import { prisma } from "@/utils/db";
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
 import { generateCheckoutHash } from "@/lib/utils";
-import s3 from "@/utils/cloudflare-config";
+import { storageProvider } from "@/services/storage";
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
@@ -36,66 +34,22 @@ export async function POST(request: Request) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
   }
 
-  // const uploadDir = path.join(
-  //   process.cwd(),
-  //   "public",
-  //   "uploads",
-  //   "checkouts",
-  //   model
-  // );
-
   const hash = generateCheckoutHash();
 
-  let bannerFileName;
-  let bottomBannerFileName;
-  let testimonialsFileName;
+  let bannerUrl;
+  let bottomBannerUrl;
+  let testimonialsUrl;
 
   if (banner) {
-    const arrayBuffer = await banner.arrayBuffer();
-    const bannerBuffer = Buffer.from(arrayBuffer);
-    bannerFileName = `${Date.now()}-${banner.name}-banner`;
-
-    await s3
-      .upload({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Key: bannerFileName,
-        Body: bannerBuffer,
-        ContentType: banner.type,
-        ACL: "public-read",
-      })
-      .promise();
+    bannerUrl = await storageProvider.upload(banner);
   }
 
   if (bottomBanner) {
-    const arrayBuffer = await bottomBanner.arrayBuffer();
-    const bottomBannerBuffer = Buffer.from(arrayBuffer);
-    bottomBannerFileName = `${Date.now()}-${bottomBanner.name}-bottomBanner`;
-
-    await s3
-      .upload({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Key: bottomBannerFileName,
-        Body: bottomBannerBuffer,
-        ContentType: bottomBanner.type,
-        ACL: "public-read",
-      })
-      .promise();
+    bottomBannerUrl = await storageProvider.upload(bottomBanner);
   }
 
   if (testimonials) {
-    const arrayBuffer = await testimonials.arrayBuffer();
-    const testimonialsBuffer = Buffer.from(arrayBuffer);
-    testimonialsFileName = `${Date.now()}-${testimonials.name}-testimonials`;
-
-    await s3
-      .upload({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Key: testimonialsFileName,
-        Body: testimonialsBuffer,
-        ContentType: testimonials.type,
-        ACL: "public-read",
-      })
-      .promise();
+    testimonialsUrl = await storageProvider.upload(testimonials);
   }
 
   const newCheckout = await prisma.checkout.create({
@@ -107,13 +61,9 @@ export async function POST(request: Request) {
       redirectLink,
       lightMode,
       model,
-      banner: banner ? `${process.env.ACCESS_R2_URL}/${bannerFileName}` : null,
-      bottomBanner: bottomBanner
-        ? `${process.env.ACCESS_R2_URL}/${bottomBannerFileName}`
-        : null,
-      testimonials: testimonials
-        ? `${process.env.ACCESS_R2_URL}/${testimonialsFileName}`
-        : null,
+      banner: bannerUrl,
+      bottomBanner: bottomBannerUrl,
+      testimonials: testimonialsUrl,
       timer: Number(timer),
       topBoxColor,
       topBoxPhrase,

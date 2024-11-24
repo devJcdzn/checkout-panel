@@ -1,5 +1,4 @@
 import { prisma } from "@/utils/db";
-import s3 from "@/utils/cloudflare-config";
 import { NextResponse } from "next/server";
 import { storageProvider } from "@/services/storage";
 
@@ -21,24 +20,9 @@ export async function POST(request: Request) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
   }
 
-  let fileName;
   let imageUrl;
 
   if (image) {
-    const arrayBuffer = await image.arrayBuffer();
-    // const buffer = Buffer.from(arrayBuffer);
-    fileName = `${Date.now()}-${image.name}`;
-
-    // await s3
-    //   .upload({
-    //     Bucket: process.env.R2_BUCKET_NAME!,
-    //     Key: fileName,
-    //     Body: buffer,
-    //     ContentType: image.type,
-    //     ACL: "public-read",
-    //   })
-    //   .promise();
-
     imageUrl = await storageProvider.upload(image);
   }
 
@@ -47,7 +31,6 @@ export async function POST(request: Request) {
       name,
       description,
       price: Number(price),
-      // image: `${process.env.ACCESS_R2_URL}/${fileName}`,
       image: imageUrl,
     },
   });
