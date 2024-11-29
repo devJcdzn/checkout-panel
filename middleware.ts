@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import jwt from "jsonwebtoken";
+
+const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key";
+
 export function middleware(request: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
-    const host = request.headers.get("host");
+  const pathname = request.nextUrl.pathname;
+  const session = request.cookies.get("panel@sessionToken");
 
-    if (
-      host === "dashboard.pixseguro.pro" ||
-      host === "pixseguro.pro" ||
-      host === "test.pixseguro.pro"
-    ) {
+  console.log(session);
+  console.log(pathname);
+
+  if (
+    !pathname.includes("/checkout") ||
+    !pathname.includes("/payment-checkout")
+  ) {
+    try {
+      if (!session) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/login";
+        return NextResponse.redirect(url);
+      }
+      // Logic to handle user here
+      const user = jwt.verify(String(session), SECRET_KEY);
+      request.headers.set("user", JSON.stringify(user));
+      return NextResponse.next();
+    } catch (err) {
       const url = request.nextUrl.clone();
-      url.pathname = `/admin${url.pathname}`;
-      return NextResponse.rewrite(url);
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
     }
-
-    if (host === "pay.pixseguro.pro" || host === "testpay.pixseguro.pro") {
-      const url = request.nextUrl.clone();
-      url.pathname = `/public${url.pathname}`;
-      return NextResponse.rewrite(url);
-    }
-
-    return NextResponse.next();
   }
 
   return NextResponse.next();
