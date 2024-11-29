@@ -8,31 +8,25 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const session = request.cookies.get("panel@sessionToken");
 
-  console.log(session);
-  console.log(pathname);
-
-  if (
-    !pathname.includes("/checkout") ||
-    !pathname.includes("/payment-checkout")
-  ) {
-    try {
-      if (!session) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/login";
-        return NextResponse.redirect(url);
-      }
-      // Logic to handle user here
-      const user = jwt.verify(String(session), SECRET_KEY);
-      request.headers.set("user", JSON.stringify(user));
-      return NextResponse.next();
-    } catch (err) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/login";
-      return NextResponse.redirect(url);
-    }
+  const publicRoutes = ["/login", "/checkout", "/payment-checkout"];
+  
+  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  try {
+    if (!session) {
+      throw new Error("Sessão inválida ou ausente");
+    }
+    const user = jwt.verify(String(session), SECRET_KEY);
+    request.headers.set("user", JSON.stringify(user));
+
+    return NextResponse.next();
+  } catch (err) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 }
 
 export const config = {
