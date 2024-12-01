@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 type FormValues = z.input<typeof formSchema>;
 
-export function LoginForm() {
+export function LoginComponentForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
