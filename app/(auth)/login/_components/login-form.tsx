@@ -55,8 +55,8 @@ export function LoginComponentForm() {
               render={({ field }) => (
                 <FormItem>
                   <div className="grid gap-2">
+                    <FormLabel htmlFor="email">Nome de usuário</FormLabel>
                     <FormControl>
-                      <FormLabel htmlFor="email">Nome de usuário</FormLabel>
                       <Input
                         id="user"
                         type="text"
@@ -74,10 +74,10 @@ export function LoginComponentForm() {
               render={({ field }) => (
                 <FormItem>
                   <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <FormLabel htmlFor="password">Senha</FormLabel>
+                    </div>
                     <FormControl>
-                      <div className="flex items-center">
-                        <FormLabel htmlFor="password">Senha</FormLabel>
-                      </div>
                       <Input id="password" type="password" {...field} />
                     </FormControl>
                   </div>
