@@ -38,7 +38,7 @@ export function LoginComponentForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-[440px]">
+    <Card className="mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>Faça login com suas credenciais</CardDescription>
