@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -25,7 +31,7 @@ type FormValues = z.input<typeof formSchema>;
 
 export function LoginForm() {
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
   });
 
   const handleSubmit = (data: FormValues) => {
@@ -44,18 +50,43 @@ export function LoginForm() {
             onSubmit={form.handleSubmit(handleSubmit)}
             className="grid gap-4"
           >
-            <div className="grid gap-2">
-              <Label htmlFor="email">Nome de usuário</Label>
-              <Input id="user" type="text" placeholder="usuário3384" />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Senha</Label>
-              </div>
-              <Input id="password" type="password" />
-            </div>
+            <FormField
+              name="user"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="grid gap-2">
+                    <FormControl>
+                      <FormLabel htmlFor="email">Nome de usuário</FormLabel>
+                      <Input
+                        id="user"
+                        type="text"
+                        placeholder="nome_sobrenome"
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="grid gap-2">
+                    <FormControl>
+                      <div className="flex items-center">
+                        <FormLabel htmlFor="password">Senha</FormLabel>
+                      </div>
+                      <Input id="password" type="password" {...field} />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
             <Button type="submit" className="w-full">
-              Login
+              Entrar
             </Button>
           </form>
         </Form>
