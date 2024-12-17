@@ -19,3 +19,12 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+POST https://test.pixseguro.pro/api/webhooks/rushpay
+Content-Type: application/json
+
+{
+  "externalId": "74jqrQgXMrVpQDo",
+  "status": "AA"
+}
