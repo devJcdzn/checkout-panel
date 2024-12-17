@@ -184,7 +184,7 @@ export async function checkPaymentStatus(paymentId: string) {
 
   if (!payment) throw new Error("Pagamento não encontrado");
 
-  if (payment.status === "credited") return true;
+  if (payment.status === "APPROVED") return true;
 
   return false;
 }
