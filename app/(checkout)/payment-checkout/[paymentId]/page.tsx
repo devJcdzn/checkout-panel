@@ -318,7 +318,9 @@ export default function CheckoutPage() {
               <section className="">
                 <h3 className="text-muted-foreground">Valor</h3>
                 <h1 className="text-4xl font-bold">
-                  {formatCurrency(data.amount, { addPrefix: true })}
+                  {formatCurrency((data.amount / 100), {
+                    addPrefix: true,
+                  })}
                 </h1>
               </section>
 
@@ -365,7 +367,7 @@ export default function CheckoutPage() {
                 <div className="flex false ">
                   {/* QR Code */}
                   <img
-                    src={data.paymentUrl}
+                    src={data.paymentCode}
                     alt=""
                     className="h-full w-full max-w[20rem] bg-white rounded-xl"
                   />
@@ -385,10 +387,11 @@ export default function CheckoutPage() {
               </span>
               <textarea
                 readOnly
+                defaultValue={data.paymentUrl}
                 className=" mt-4 select-none resize-none rounded-xl bg-transparent px-4 py-2 text-center text-sm font-semibold outline-none ring-1 ring-border"
                 style={{ height: "96px" }}
               >
-                {data.paymentCode}
+                {data.paymentUrl}
               </textarea>
               <Button
                 onClick={copyPaymentCodeToClipboard}

@@ -4,8 +4,14 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { customerName, customerEmail, customerTax, amount, checkoutId } =
-    await request.json();
+  const {
+    customerName,
+    customerEmail,
+    customerTax,
+    amount,
+    checkoutId,
+    items,
+  } = await request.json();
 
   if (
     !customerName ||
@@ -42,20 +48,31 @@ export async function POST(request: Request) {
     });
 
     const generatePaymentCode = JSON.stringify({
+      name: customerName,
+      email: customerEmail,
+      cpf: customerTax,
+      phone: "27992525560",
+      paymentMethod: "PIX",
       amount,
-      expiration: 60 * 15,
       externalId: payment.id,
-      callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/fx`,
+      postbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/rushpay`,
+      items: items.map((item: any) => ({
+        unitPrice: Math.round(item.price * 100),
+        title: item.name,
+        quantity: 1,
+        tangible: false
+      })),
     });
 
     const config = {
       method: "post",
-      url: "https://ws.fxbank.com.br/api/v1/gateway/request-qrcode",
+      url: "https://pay.rushpay.site/api/v1/transaction.purchase",
       maxBodyLength: Infinity,
       headers: {
         at: process.env.FX_BANK_API_TOKEN,
         as: process.env.FX_BANK_API_SECRET,
         "Content-Type": "application/json",
+        "Authorization": process.env.RUSHPAY_API_KEY!
       },
       data: generatePaymentCode,
     };
@@ -65,10 +82,12 @@ export async function POST(request: Request) {
     const updatedPayment = await updatePayment({
       ...payment,
       status: "pending",
-      paymentCode: response.paymentCode,
-      paymentUrl: response.paymentUrl,
+      paymentCode: response.pixQrCode,
+      paymentUrl: response.pixCode,
       transactionId: response.id,
     });
+
+    console.log(updatedPayment);
 
     return new NextResponse(
       JSON.stringify({
@@ -83,6 +102,7 @@ export async function POST(request: Request) {
       }
     );
   } catch (err) {
+    console.log(err);
     return new NextResponse("Server Error", { status: 500 });
   }
 }

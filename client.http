@@ -1,0 +1,21 @@
+###
+POST https://pay.rushpay.site/api/v1/transaction.purchase
+Authorization: 3425e315-1d7d-4cb4-81ae-ad197e2136a3
+Content-Type: application/json
+
+{
+  "name": "Jean Carlos",
+  "email": "user@example.com",
+  "cpf": "19309908718",
+  "phone": "27992525560",
+  "paymentMethod": "PIX",
+  "amount": 500,
+  "items": [
+    {
+      "unitPrice": 500,
+      "title": "Pack Tik Tok",
+      "quantity": 1,
+      "tangible": false
+    }
+  ]
+}

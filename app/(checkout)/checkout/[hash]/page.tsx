@@ -66,15 +66,18 @@ export default function CheckoutPage() {
   });
 
   const handleSubmit = async (values: FormValues) => {
+    if (!data) return;
     const requestPaymentData = {
       customerName: values.name,
       customerEmail: values.email,
-      customerTax: values.tax,
-      amount: data?.product.price,
+      customerTax: values.tax.split(".").join("").split("-").join(""),
+      amount: Math.round(data?.product.price * 100),
       checkoutId: data?.id,
+      items: [data.product],
     };
     const response = await paymentMutation.mutateAsync(requestPaymentData);
-    router.push(`/payment-checkout/${response.paymentData.id}`);
+    console.log(requestPaymentData);
+    // router.push(`/payment-checkout/${response.paymentData.id}`);
   };
 
   if (!data || isLoading) {
