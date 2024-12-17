@@ -28,3 +28,12 @@ Content-Type: application/json
   "externalId": "74jqrQgXMrVpQDo",
   "status": "AA"
 }
+
+###
+POST http://localhost:3000/api/webhooks/rushpay
+Content-Type: application/json
+
+{
+  "externalId": "74jqrQgXMrVpQDo",
+  "status": "APPROVED"
+}
