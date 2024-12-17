@@ -76,8 +76,8 @@ export default function CheckoutPage() {
       items: [data.product],
     };
     const response = await paymentMutation.mutateAsync(requestPaymentData);
-    console.log(requestPaymentData);
-    // router.push(`/payment-checkout/${response.paymentData.id}`);
+    // console.log(requestPaymentData);
+    router.push(`/payment-checkout/${response.paymentData.id}`);
   };
 
   if (!data || isLoading) {
