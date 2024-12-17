@@ -236,7 +236,7 @@ export default function CheckoutPage() {
           style={{ borderColor, backgroundColor: secondaryColor }}
         >
           <section className="flex items-start gap-2">
-            <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-[#b4b4b4]">
+            <div className="relative h-[6rem] w-full max-w-[6rem] rounded-lg bg-transparent">
               <img
                 alt={`${data.product.name} - Product Image`}
                 decoding="async"
