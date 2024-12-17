@@ -390,9 +390,7 @@ export default function CheckoutPage() {
                 defaultValue={data.paymentUrl}
                 className=" mt-4 select-none resize-none rounded-xl bg-transparent px-4 py-2 text-center text-sm font-semibold outline-none ring-1 ring-border"
                 style={{ height: "96px" }}
-              >
-                {data.paymentUrl}
-              </textarea>
+              />
               <Button
                 onClick={copyPaymentCodeToClipboard}
                 className="gap mt-4 flex w-full max-w-[20rem] items-center 
