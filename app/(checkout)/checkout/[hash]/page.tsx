@@ -48,9 +48,11 @@ export default function CheckoutPage() {
 
   const hasTopBox = !!data?.topBoxColor && !!data.topBoxPhrase;
 
-  const bgColor = data?.lightMode ? "#e4e4e4" : "#171717";
+  const bgColor = data?.lightMode ? "#f1f1f3" : "#171717";
   const secondaryColor = data?.lightMode ? "#fff" : "#272727";
   const textColor = data?.lightMode ? "#000" : "#e4e4e4";
+  const titleColor = data?.lightMode ? "#474747" : "#e4e4e4";
+  const labelColor = data?.lightMode ? "#7c8183" : "#e4e4e4";
   const borderColor = data?.lightMode ? "#c4c4c4" : "#474747";
 
   const shouldBeRenderTimer =
@@ -232,7 +234,7 @@ export default function CheckoutPage() {
       </div>
       <div className="mt-8 w-full max-w-[90%] lg:max-w-[60rem]">
         <div
-          className={`w-full rounded-2xl border border-[#474747] p-4`}
+          className={`w-full rounded-2xl p-4`}
           style={{ borderColor, backgroundColor: secondaryColor }}
         >
           <section className="flex items-start gap-2">
@@ -261,7 +263,7 @@ export default function CheckoutPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div
-              className={`mt-4 w-full rounded-xl border border-[#474747] p-4`}
+              className={`mt-4 w-full rounded-xl p-4`}
               style={{ borderColor, backgroundColor: secondaryColor }}
             >
               <section className="flex items-center gap-2">
@@ -276,13 +278,18 @@ export default function CheckoutPage() {
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     stroke="none"
-                    className={`tabler-icon tabler-icon-user-filled h-4 w-4 text-[${secondaryColor}]`}
+                    className={`tabler-icon tabler-icon-user-filled h-4 w-4 text-white`}
                   >
                     <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z"></path>
                     <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z"></path>
                   </svg>
                 </div>
-                <h2 className="text-lg font-semibold">Identificação</h2>
+                <h2
+                  className="text-lg font-semibold"
+                  style={{ color: titleColor }}
+                >
+                  Identificação
+                </h2>
               </section>
 
               <div className="mt-6 flex flex-col gap-4">
@@ -292,7 +299,9 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">Nome completo</FormLabel>
+                        <FormLabel className="" style={{ color: labelColor }}>
+                          Nome completo
+                        </FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -336,7 +345,9 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">E-mail</FormLabel>
+                        <FormLabel className="" style={{ color: labelColor }}>
+                          E-mail
+                        </FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -393,7 +404,9 @@ export default function CheckoutPage() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="">CPF/CNPJ</FormLabel>
+                        <FormLabel className="" style={{ color: labelColor }}>
+                          CPF/CNPJ
+                        </FormLabel>
                         <div className="relative mt-2 rounded-full">
                           <div
                             className="pointer-events-none absolute inset-y-0 
@@ -457,7 +470,7 @@ export default function CheckoutPage() {
             </div>
 
             <div
-              className={`mt-4 w-full rounded-xl border border-[#474747] bg-[${secondaryColor}] p-4`}
+              className={`mt-4 w-full rounded-xl bg-[${secondaryColor}] p-4`}
               style={{ borderColor, backgroundColor: secondaryColor }}
             >
               <section className="flex items-center gap-2">
@@ -474,12 +487,17 @@ export default function CheckoutPage() {
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     stroke="none"
-                    className={`tabler-icon tabler-icon-credit-card-filled h-4 w-4 text-[${secondaryColor}]`}
+                    className={`tabler-icon tabler-icon-credit-card-filled h-4 w-4 text-white`}
                   >
                     <path d="M22 10v6a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-6h20zm-14.99 4h-.01a1 1 0 1 0 .01 2a1 1 0 0 0 0 -2zm5.99 0h-2a1 1 0 0 0 0 2h2a1 1 0 0 0 0 -2zm5 -10a4 4 0 0 1 4 4h-20a4 4 0 0 1 4 -4h12z"></path>
                   </svg>
                 </div>
-                <h2 className="text-lg font-semibold ">Pagamento</h2>
+                <h2
+                  className="text-lg font-semibold"
+                  style={{ color: titleColor }}
+                >
+                  Pagamento
+                </h2>
               </section>
 
               <div className="mt-6 flex flex-col gap-4">
@@ -546,7 +564,7 @@ export default function CheckoutPage() {
                     </svg>
                     <section>
                       <h2 className="font-semibold text-blue-500">Imediato</h2>
-                      <span className=" text-sm">
+                      <span className="text-sm" style={{ color: labelColor }}>
                         Ao selecionar a opção Gerar Pix o código para pagamento
                         estará disponível.
                       </span>
@@ -563,7 +581,7 @@ export default function CheckoutPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="tabler-icon tabler-icon-qrcode h-8 w-8 text-vanguard-blue-400 "
+                      className="tabler-icon tabler-icon-qrcode h-8 w-8 text-blue-500"
                     >
                       <path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
                       <path d="M7 17l0 .01"></path>
@@ -582,7 +600,7 @@ export default function CheckoutPage() {
                       <h2 className="font-semibold text-blue-500">
                         Pagamento Simples
                       </h2>
-                      <span className=" text-sm">
+                      <span className="text-sm" style={{ color: labelColor }}>
                         Para pagar basta abrir o aplicativo do seu banco,
                         procurar pelo PIX e escanear o QRcode.
                       </span>
@@ -608,7 +626,7 @@ export default function CheckoutPage() {
                       <h2 className="font-semibold text-blue-500">
                         100% Seguro
                       </h2>
-                      <span className=" text-sm">
+                      <span className="text-sm" style={{ color: labelColor }}>
                         O pagamento com PIX foi desenvolvido pelo Banco Central
                         para facilitar suas compras.
                       </span>
@@ -616,8 +634,16 @@ export default function CheckoutPage() {
                   </div>
 
                   <section className="mt-2 flex items-center justify-between gap-2 ">
-                    <h3 className="text-lg font-semibold">Valor total:</h3>
-                    <h3 className="text-lg font-semibold  ">
+                    <h3
+                      className="text-lg font-semibold"
+                      style={{ color: labelColor }}
+                    >
+                      Valor total:
+                    </h3>
+                    <h3
+                      className="text-lg font-semibold"
+                      style={{ color: labelColor }}
+                    >
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -646,7 +672,8 @@ export default function CheckoutPage() {
                           viewBox="0 0 24 24"
                           fill="currentColor"
                           stroke="none"
-                          className="tabler-icon tabler-icon-shield-check-filled text-muted-foreground h-8 w-8"
+                          className="tabler-icon tabler-icon-shield-check-filled h-8 w-8"
+                          style={{ color: labelColor }}
                         >
                           <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z"></path>
                         </svg>
