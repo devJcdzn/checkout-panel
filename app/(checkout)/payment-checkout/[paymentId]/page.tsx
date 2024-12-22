@@ -21,14 +21,16 @@ export default function CheckoutPage() {
 
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
-  const bgColor = data?.checkout?.lightMode ? "#e4e4e4" : "#171717";
+  const bgColor = data?.checkout?.lightMode ? "#f1f1f3" : "#171717";
   const secondaryColor = data?.checkout?.lightMode ? "#fff" : "#272727";
   const textColor = data?.checkout?.lightMode ? "#000" : "#e4e4e4";
+  const titleColor = data?.checkout?.lightMode ? "#474747" : "#e4e4e4";
+  const labelColor = data?.checkout?.lightMode? "#7c8183" : "#e4e4e4";
   const borderColor = data?.checkout?.lightMode ? "#c4c4c4" : "#474747";
 
   const copyPaymentCodeToClipboard = () => {
     navigator.clipboard
-      .writeText(data?.paymentCode)
+      .writeText(data?.paymentUrl)
       .then(() => {
         toast({
           title: "Código de pagamento copiado!",
@@ -318,7 +320,7 @@ export default function CheckoutPage() {
               <section className="">
                 <h3 className="text-muted-foreground">Valor</h3>
                 <h1 className="text-4xl font-bold">
-                  {formatCurrency((data.amount / 100), {
+                  {formatCurrency(data.amount / 100, {
                     addPrefix: true,
                   })}
                 </h1>
