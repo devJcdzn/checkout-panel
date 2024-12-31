@@ -2,7 +2,6 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { NewCheckoutSheet } from "@/features/checkouts/components/create-checkout-sheet";
-import { EditCheckoutSheet } from "@/features/checkouts/components/edit-checkout-sheet";
 import { NewProductSheet } from "@/features/products/components/new-product-sheet";
 import { NewUserSheet } from "@/features/users/components/new-user-sheet";
 import { useMountedState } from "react-use";
@@ -16,7 +15,6 @@ export function SheetProvider() {
     <>
       <NewProductSheet />
       <NewCheckoutSheet />
-      <EditCheckoutSheet />
       <NewUserSheet />
       {/* toaster shadcn provider */}
       <Toaster />
