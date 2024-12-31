@@ -2,6 +2,7 @@ import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 import { generateCheckoutHash } from "@/lib/utils";
 import { storageProvider } from "@/services/storage";
+import { verifySession } from "@/app/lib/session";
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
@@ -9,6 +10,8 @@ export async function POST(request: Request) {
       status: 400,
     });
   }
+
+  const { userId } = await verifySession();
 
   const formData = await request.formData();
   console.log(formData);
@@ -25,10 +28,24 @@ export async function POST(request: Request) {
   const topBoxPhrase = formData.get("topBoxPhrase")?.toString();
   const bottomBoxColor = formData.get("bottomBoxColor")?.toString();
   const bottomBoxPhrase = formData.get("bottomBoxPhrase")?.toString();
+  const checkoutColor = formData.get("checkoutColor")?.toString();
 
   const banner = formData.get("banner") as File | null;
   const bottomBanner = formData.get("bottomBanner") as File | null;
   const testimonials = formData.get("testimonials") as File | null;
+
+  const orderBumps: { productId: number; discount: number }[] = [];
+  for (let i = 0; ; i++) {
+    const productId = formData.get(`orderBumps[${i}][productId]`);
+    const discount = formData.get(`orderBumps[${i}][discount]`)?.toString();
+
+    if (!productId) break;
+
+    orderBumps.push({
+      productId: Number(productId),
+      discount: discount ? parseFloat(discount) / 100 : 0,
+    });
+  }
 
   if (!slug || !productId) {
     return new NextResponse("Campos obrigatórios faltando", { status: 400 });
@@ -69,11 +86,28 @@ export async function POST(request: Request) {
       topBoxPhrase,
       bottomBoxColor,
       bottomBoxPhrase,
+      userId,
+      checkoutColor: checkoutColor?.includes("#")
+        ? checkoutColor
+        : `#${checkoutColor}`,
     },
     select: {
+      id: true,
       hash: true,
     },
   });
+
+  const orderBumpData = orderBumps.map((bump: any) => ({
+    productId: Number(bump.productId),
+    discount: bump.discount,
+    checkoutId: newCheckout.id,
+  }));
+
+  if (orderBumpData.length > 0) {
+    await prisma.orderBump.createMany({
+      data: orderBumpData,
+    });
+  }
 
   prisma.$disconnect();
 

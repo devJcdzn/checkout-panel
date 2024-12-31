@@ -3,6 +3,14 @@ import { api } from "@/lib/api";
 import { convertAmountFromMiliunits } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
+export interface OrderBump {
+  id: string;
+  checkoutId: number;
+  productId: number;
+  discount: number;
+  product: IProduct;
+}
+
 export interface ICheckout {
   id: number;
   slug: string;
@@ -21,6 +29,9 @@ export interface ICheckout {
   topBoxPhrase: string | null;
   bottomBoxColor: string | null;
   bottomBoxPhrase: string | null;
+  checkoutColor: string | null;
+
+  orderBump: OrderBump[];
 }
 
 export const useGetCheckout = (hash?: string) => {
@@ -40,6 +51,15 @@ export const useGetCheckout = (hash?: string) => {
           ...data.checkout.product,
           price: convertAmountFromMiliunits(data.checkout.product.price),
         },
+        orderBump: data.checkout.orderBump.map((bump) => ({
+          ...bump,
+          product: {
+            ...bump.product,
+            price: convertAmountFromMiliunits(
+              bump.product.price - bump.product.price * bump.discount
+            ),
+          },
+        })),
       };
     },
   });

@@ -1,9 +1,7 @@
 "use client";
 import { z } from "zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@/lib/utils";
 
 import {
   Form,
@@ -31,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select } from "@/components/custom-select";
 import { ImageUpload } from "@/components/upload-image";
+import { Trash } from "lucide-react";
 
 const formSchema = z.object({
   slug: z.string().min(3),
@@ -47,6 +46,13 @@ const formSchema = z.object({
   topBoxPhrase: z.string().optional(),
   bottomBoxColor: z.string().optional(),
   bottomBoxPhrase: z.string().optional(),
+  checkoutColor: z.string().optional(),
+  orderBumps: z.array(
+    z.object({
+      productId: z.number(),
+      discount: z.string(),
+    })
+  ),
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -71,6 +77,11 @@ export function CheckoutForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "orderBumps",
   });
 
   const handleSubmit = (values: FormValues) => {
@@ -103,120 +114,217 @@ export function CheckoutForm({
               </FormItem>
             )}
           />
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button type="button">Timer</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Configuração do timer</DialogTitle>
-                <DialogDescription>
-                  Configurações prévias do timer opcional do checkout. (Caso não
-                  deseje o timer deixar os campos vazios)
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid flex-1 gap-2">
-                <FormField
-                  name="topBoxColor"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cor da caixa superior</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={disabled}
-                          placeholder="Cor (hexadecimal)"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="topBoxPhrase"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Frase da Caixa Superior</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={disabled}
-                          placeholder="Ex: Pagamento Priorizado!"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+          <div className="flex flex-col gap-1 items-center">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button type="button" size="sm">
+                  Timer
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Configuração do timer</DialogTitle>
+                  <DialogDescription>
+                    Configurações prévias do timer opcional do checkout. (Caso
+                    não deseje o timer deixar os campos vazios)
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid flex-1 gap-2">
+                  <FormField
+                    name="topBoxColor"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Cor da caixa superior</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={disabled}
+                            placeholder="Cor (hexadecimal)"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="topBoxPhrase"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Frase da Caixa Superior</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={disabled}
+                            placeholder="Ex: Pagamento Priorizado!"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  name="bottomBoxColor"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cor da caixa inferior</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={disabled}
-                          placeholder="Cor (hexadecimal)"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="bottomBoxPhrase"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Frase da Caixa Inferior</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={disabled}
-                          placeholder="Ex: Frase de contagem!"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    name="bottomBoxColor"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Cor da caixa inferior</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={disabled}
+                            placeholder="Cor (hexadecimal)"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="bottomBoxPhrase"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Frase da Caixa Inferior</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={disabled}
+                            placeholder="Ex: Frase de contagem!"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  name="timer"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tempo do Timer</FormLabel>
-                      <FormDescription>
-                        Tempo do timer em minutos que aparecerá na parte
-                        superior do checkout.
-                      </FormDescription>
-                      <FormControl>
-                        <Input
+                  <FormField
+                    name="timer"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tempo do Timer</FormLabel>
+                        <FormDescription>
+                          Tempo do timer em minutos que aparecerá na parte
+                          superior do checkout.
+                        </FormDescription>
+                        <FormControl>
+                          <Input
+                            disabled={disabled}
+                            type="number"
+                            min={0}
+                            max={30}
+                            placeholder="max:30min"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <DialogFooter className="sm:justify-start">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Confirmar
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button type="button" size="sm">
+                  Order Bumps
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Configuração de order bumps</DialogTitle>
+                  <DialogDescription>
+                    Adicione order bumps ou upsells para aumentar seu ticket
+                    médio.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {fields.map((field, index) => (
+                    <div key={field.id} className="flex gap-2 items-end">
+                      <div className="">
+                        <label>Produto</label>
+                        <Select
+                          placeholder="Selecione um Produto"
+                          options={productsOptions}
+                          value={form.watch(`orderBumps.${index}.productId`)}
+                          onChange={(value) =>
+                            form.setValue(
+                              `orderBumps.${index}.productId`,
+                              value as number
+                            )
+                          }
                           disabled={disabled}
-                          type="number"
-                          min={0}
-                          max={30}
-                          placeholder="max:30min"
-                          {...field}
                         />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Confirmar
+                      </div>
+                      <div className="flex-1">
+                        <label>Desconto (%)</label>
+                        <Input
+                          placeholder="Ex: 10"
+                          value={form.watch(`orderBumps.${index}.discount`)}
+                          onChange={(e) =>
+                            form.setValue(
+                              `orderBumps.${index}.discount`,
+                              e.target.value
+                            )
+                          }
+                          disabled={disabled}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash className="size-5" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      append({
+                        productId: 0,
+                        discount: "",
+                      })
+                    }
+                  >
+                    Adicionar Order Bump
                   </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Confirmar
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
+        <FormField
+          name="checkoutColor"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cor do Checkout</FormLabel>
+              <FormControl>
+                <Input
+                  disabled={disabled}
+                  placeholder="Cor base do checkout"
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           name="productId"
           control={form.control}

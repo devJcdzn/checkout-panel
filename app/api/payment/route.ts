@@ -1,4 +1,5 @@
 import { createPayment, updateMetrics, updatePayment } from "@/actions";
+import { verifySession } from "@/app/lib/session";
 import { generateCheckoutHash } from "@/lib/utils";
 import axios from "axios";
 import { NextResponse } from "next/server";
@@ -12,6 +13,8 @@ export async function POST(request: Request) {
     checkoutId,
     items,
   } = await request.json();
+
+  const { userId } = await verifySession()
 
   if (
     !customerName ||
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
       checkoutId,
       expiration: 60 * 15,
       status: "no-created",
+      userId,
     });
 
     const generatePaymentCode = JSON.stringify({
@@ -56,12 +60,7 @@ export async function POST(request: Request) {
       amount,
       externalId: payment.id,
       postbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/rushpay`,
-      items: items.map((item: any) => ({
-        unitPrice: Math.round(item.price * 100),
-        title: item.name,
-        quantity: 1,
-        tangible: false
-      })),
+      items,
     });
 
     const config = {

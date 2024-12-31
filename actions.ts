@@ -16,6 +16,7 @@ export interface CreatePaymentRequest {
   customerEmail: string;
   customerTax: string | null;
   transactionId?: string | null;
+  userId?: number;
 }
 
 export async function createPayment(data: CreatePaymentRequest) {

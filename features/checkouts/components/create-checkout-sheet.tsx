@@ -27,6 +27,13 @@ const formSchema = z.object({
   topBoxPhrase: z.string().optional(),
   bottomBoxColor: z.string().optional(),
   bottomBoxPhrase: z.string().optional(),
+  checkoutColor: z.string().optional(),
+  orderBumps: z.array(
+    z.object({
+      productId: z.number(),
+      discount: z.string(),
+    })
+  ),
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -57,6 +64,10 @@ export const NewCheckoutSheet = () => {
 
     if (data.lightMode) {
       formData.append("lightMode", data.lightMode.toString());
+    }
+    
+    if (data.checkoutColor) {
+      formData.append("checkoutColor", data.checkoutColor.toString());
     }
 
     if (data.topBoxColor) {
@@ -96,6 +107,16 @@ export const NewCheckoutSheet = () => {
 
     if (data.testimonials instanceof File) {
       formData.append("testimonials", data.testimonials);
+    }
+
+    if (data.orderBumps && data.orderBumps.length > 0) {
+      data.orderBumps.forEach((orderBump, index) => {
+        formData.append(
+          `orderBumps[${index}][productId]`,
+          orderBump.productId.toString()
+        );
+        formData.append(`orderBumps[${index}][discount]`, orderBump.discount);
+      });
     }
 
     checkoutMutation.mutate(formData, {

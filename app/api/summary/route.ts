@@ -12,7 +12,7 @@ export async function GET() {
 
   const totalConversionsAmount = await prisma.payment.aggregate({
     where: {
-      status: "credited",
+      status: "APPROVED",
     },
     _sum: {
       amount: true,

@@ -1,6 +1,7 @@
 import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 import { storageProvider } from "@/services/storage";
+import { verifySession } from "@/app/lib/session";
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
@@ -8,6 +9,8 @@ export async function POST(request: Request) {
       status: 400,
     });
   }
+
+  const { userId } = await verifySession();
 
   const formData = await request.formData();
 
@@ -32,6 +35,7 @@ export async function POST(request: Request) {
       description,
       price: Number(price),
       image: imageUrl,
+      userId
     },
   });
 

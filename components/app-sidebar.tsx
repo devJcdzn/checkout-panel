@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { CircleDollarSign, FileBox, Home, Settings } from "lucide-react";
+import { CircleDollarSign, FileBox, Home, Settings, User2 } from "lucide-react";
 import Link from "next/link";
 
 const data = [
@@ -19,18 +19,21 @@ const data = [
     navItems: [
       {
         title: "Analytics",
-        url: "/",
+        url: "/dashboard",
         icon: Home,
+        roles: ["admin", "member"],
       },
       {
         title: "Checkouts",
-        url: "/checkouts",
+        url: "/dashboard/checkouts",
         icon: CircleDollarSign,
+        roles: ["admin", "member"],
       },
       {
         title: "Modelos",
-        url: "/models",
+        url: "/dashboard/models",
         icon: FileBox,
+        roles: [],
       },
     ],
   },
@@ -39,14 +42,21 @@ const data = [
     navItems: [
       {
         title: "Configurações",
-        url: "/settings",
+        url: "/dashboard/settings",
         icon: Settings,
+        roles: ["admin", "member"],
+      },
+      {
+        title: "Membros",
+        url: "/dashboard/members",
+        icon: User2,
+        roles: ["admin"],
       },
     ],
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ role = "member" }: { role?: string }) {
   return (
     <Sidebar>
       <SidebarHeader />
@@ -57,14 +67,18 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.navItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <>
+                    {item.roles.includes(role) && (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <Link href={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    )}
+                  </>
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>

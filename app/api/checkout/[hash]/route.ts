@@ -10,25 +10,14 @@ export async function GET(
   const hash = (await params).hash;
 
   const checkout = await prisma.checkout.findUnique({
-    where: {
-      hash,
-    },
-    select: {
-      id: true,
-      product: true,
-      slug: true,
-      redirectLink: true,
-      color: true,
-      banner: true,
-      lightMode: true,
-      impressions: true,
-      topBoxColor: true,
-      timer: true,
-      topBoxPhrase: true,
-      bottomBoxColor: true,
-      bottomBoxPhrase: true,
-      bottomBanner: true,
-      testimonials: true,
+    where: { hash },
+    include: {
+      product: true, // Produto principal do checkout
+      orderBump: {
+        include: {
+          product: true, // Produtos relacionados aos order bumps
+        },
+      },
     },
   });
 

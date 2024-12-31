@@ -11,12 +11,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetCheckout } from "@/features/checkouts/api/use-get-checkout";
+import {
+  useGetCheckout,
+  OrderBump,
+} from "@/features/checkouts/api/use-get-checkout";
 import { useCreatePayment } from "@/features/payment/api/use-create-payment";
-import { cn, formatCustomerTax } from "@/lib/utils";
+import { cn, formatCurrency, formatCustomerTax } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -41,6 +45,18 @@ const formSchema = z.object({
 type FormValues = z.input<typeof formSchema>;
 
 export default function CheckoutPage() {
+  const [selectedBumps, setSelectedBumps] = useState<OrderBump[]>([]);
+
+  const handleSelectOrderBump = (bump: OrderBump) => {
+    setSelectedBumps((prev) => {
+      if (prev.find((selectedBump) => selectedBump.id === bump.id)) {
+        return prev.filter((selectedBump) => selectedBump.id !== bump.id);
+      } else {
+        return [...prev, bump];
+      }
+    });
+  };
+
   const { hash } = useParams<{ hash: string }>();
   const { data, isLoading } = useGetCheckout(hash);
   const paymentMutation = useCreatePayment();
@@ -48,6 +64,7 @@ export default function CheckoutPage() {
 
   const hasTopBox = !!data?.topBoxColor && !!data.topBoxPhrase;
 
+  const checkoutColor = data?.checkoutColor || "#1CB877";
   const bgColor = data?.lightMode ? "#f1f1f3" : "#171717";
   const secondaryColor = data?.lightMode ? "#fff" : "#272727";
   const textColor = data?.lightMode ? "#000" : "#e4e4e4";
@@ -69,13 +86,36 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (values: FormValues) => {
     if (!data) return;
+
+    const totalAmount =
+      data.product.price +
+      selectedBumps.reduce((sum, bump) => {
+        const bumpPrice = bump.product.price;
+        const discount = bump.discount || 0;
+        return sum + bumpPrice * ((100 - discount) / 100);
+      }, 0);
+
+    const formattedProduct = {
+      unitPrice: Math.round(data.product.price * 100),
+      title: data.product.name,
+      quantity: 1,
+      tangible: false,
+    };
+
+    const bumpsFormatted = selectedBumps.map((bump) => ({
+      unitPrice: Math.round(bump.product.price * 100),
+      title: bump.product.name,
+      quantity: 1,
+      tangible: false,
+    }));
+
     const requestPaymentData = {
       customerName: values.name,
       customerEmail: values.email,
       customerTax: values.tax.split(".").join("").split("-").join(""),
-      amount: Math.round(data?.product.price * 100),
+      amount: Math.round(totalAmount * 100),
       checkoutId: data?.id,
-      items: [data.product],
+      items: [formattedProduct, ...bumpsFormatted],
     };
     const response = await paymentMutation.mutateAsync(requestPaymentData);
     // console.log(requestPaymentData);
@@ -203,7 +243,7 @@ export default function CheckoutPage() {
 
   return (
     <main
-      className={`flex h-full min-h-screen flex-col items-center bg-[${bgColor}] pb-20`}
+      className={`flex h-full min-h-screen flex-col items-center pb-20`}
       style={{ backgroundColor: bgColor, color: textColor }}
     >
       <div className="mb-4 w-full lg:max-w-[60rem]">
@@ -248,7 +288,9 @@ export default function CheckoutPage() {
             </div>
             <section>
               <h2 className="font-medium">{data.product.name}</h2>
-              <h2 className="text-2xl font-bold text-[#1CB877]">
+              <h2
+                className="text-2xl font-bold text-green-600"
+              >
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
@@ -269,7 +311,7 @@ export default function CheckoutPage() {
               <section className="flex items-center gap-2">
                 <div
                   className="flex h-6 w-6 items-center justify-center rounded-md"
-                  style={{ backgroundColor: "rgb(76, 175, 80)" }}
+                  style={{ backgroundColor: checkoutColor }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -477,7 +519,7 @@ export default function CheckoutPage() {
                 <div
                   className="flex h-6 w-6 items-center justify-center rounded-md"
                   style={{
-                    backgroundColor: "rgb(76,175,80)",
+                    backgroundColor: checkoutColor,
                   }}
                 >
                   <svg
@@ -504,7 +546,7 @@ export default function CheckoutPage() {
                 <section className="flex flex-col gap-2">
                   <button
                     type="button"
-                    className="border-green-500 text-green-500 relative  flex 
+                    className="border-green-600 text-green-600 relative  flex 
                     w-full max-w-[17rem] flex-col items-start justify-start 
                     rounded-lg border-2  p-4  duration-300 lg:hover:-translate-y-2"
                   >
@@ -650,6 +692,66 @@ export default function CheckoutPage() {
                       }).format(data.product.price)}
                     </h3>
                   </section>
+
+                  {data.orderBump.length > 0 && (
+                    <div
+                      className="w-full flex-col max-w-[90%] lg:max-w-[60rem] mt-3 p-2 rounded-xl"
+                      style={{
+                        backgroundColor: secondaryColor,
+                        color: textColor,
+                      }}
+                    >
+                      {data.orderBump.map((bump) => (
+                        <section
+                          className="flex flex-col gap-2 border-2 p-4 rounded-lg 
+                          border-green-600 relative"
+                          key={bump.id}
+                        >
+                        <div className="absolute top-0 right-0 bg-green-600 p-2 
+                        rounded-bl-lg text-xs text-white">
+                          {bump.discount*100}% de desconto
+                        </div>
+                          <div className="flex items-center gap-4">
+                            <input
+                              type="checkbox"
+                              className="size-4 rounded-full"
+                              checked={
+                                !!selectedBumps.find(
+                                  (selected) => selected.id === bump.id
+                                )
+                              }
+                              onChange={() => handleSelectOrderBump(bump)}
+                            />
+                            <h2
+                              className="text-lg md:text-xl font-semibold mb-2 text-green-600"
+                            >
+                              Oferta limitada
+                            </h2>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <img
+                              alt={`${bump.product.name} - Product Image`}
+                              decoding="async"
+                              className="rounded-lg object-cover size-14"
+                              src={bump.product.image}
+                            />
+                            <div className="flex flex-col gap-2">
+                              <h3 className="text-base font-normal">
+                                {bump.product.name}
+                              </h3>
+                              <span
+                                className="text-lg md:text-xl font-semibold text-green-600"
+                              >
+                                {formatCurrency(bump.product.price, {
+                                  addPrefix: true,
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  )}
 
                   <section className="flex flex-col">
                     <button
